@@ -26,3 +26,4 @@
 #define COMA                    282
 #define PYC                     283
 #define ASIGN                   284
+#define CABECERA_PROGRAMA       285
