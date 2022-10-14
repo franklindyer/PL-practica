@@ -9,7 +9,7 @@
 #define NOMB_ENTRADA            265
 #define NOMB_SALIDA             266
 #define LISTA_SENT              267
-#define OP_TERN_PRIM            268
+#define OP_TERN_PRIM_UN         268
 #define OP_TERN_SEG             269
 #define OP_BINARIO              270
 #define OP_UNARIO               271
@@ -27,3 +27,5 @@
 #define PYC                     283
 #define ASIGN                   284
 #define CABECERA_PROGRAMA       285
+#define MARCA_INI_DECLAR_VARIABLES      286
+#define MARCA_FIN_DECLAR_VARIABLES      287

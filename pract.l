@@ -10,6 +10,8 @@ int DEBUG = 1;
 
 CABECERA_PROGRAMA "principal"
 SUBPROG_CLAVE "proced"
+MARCA_INI_DECLAR_VARIABLES "def variables"
+MARCA_FIN_DECLAR_VARIABLES "enddef variables"
 TIPO_PRIM ("entero"|"real"|"booleano"|"caracter"|"cadena")
 TIPO_LISTA "lista de"
 NOMB_IF "si"
@@ -20,10 +22,10 @@ NOMB_FOR "para"
 NOMB_ENTRADA "cin <<<"
 NOMB_SALIDA "cout >>>"
 LISTA_SENT (">>"|"<<"|"$")
-OP_TERN_PRIM "++"
+OP_TERN_PRIM_UN "++"
 OP_TERN_SEG "@"
-OP_BINARIO ("%"|"*"|"/"|"=="|"<"|">"|"<="|">="|"!="|"&&"|"||"|"^"|"@"|"–-"|"**")
-OP_UNARIO ("!"|"++"|"#"|"?")
+OP_BINARIO ("%"|"*"|"/"|"=="|"<"|">"|"<="|">="|"!="|"&&"|"||"|"^"|"@"|"**")
+OP_UNARIO ("!"|"#"|"?"|"--")
 OP_UN_BIN ("+"|"-")
 CADENA \"[^\"]*\"
 PARIZQ "("
@@ -51,6 +53,16 @@ PANICO .
 {SUBPROG_CLAVE} {
     if (DEBUG) printf("Clave de subprograma\n");
     return SUBPROG_CLAVE; 
+}
+
+{MARCA_INI_DECLAR_VARIABLES} {
+    if (DEBUG) printf("Marca de inicio de declaración de variables\n");
+    return MARCA_INI_DECLAR_VARIABLES;
+}
+
+{MARCA_FIN_DECLAR_VARIABLES} {
+    if (DEBUG) printf("Marca de fin de declaración de variables\n");
+    return MARCA_FIN_DECLAR_VARIABLES;
 }
 
 {TIPO_PRIM} {
@@ -103,9 +115,9 @@ PANICO .
     return LISTA_SENT;
 }
 
-{OP_TERN_PRIM} {
-    if (DEBUG) printf("Primera parte de operación ternaria: %s\n", yytext);
-    return OP_TERN_PRIM;
+{OP_TERN_PRIM_UN} {
+    if (DEBUG) printf("Primera parte de operación ternaria o bien una operación unaria: %s\n", yytext);
+    return OP_TERN_PRIM_UN;
 }
 
 {OP_TERN_SEG} {

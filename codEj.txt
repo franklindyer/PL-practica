@@ -1,17 +1,25 @@
 proced fibonacci(entero n, entero f) {
-    entero f0, f1;
+    def variables
+        entero f0, f1, f, i;
+    enddef variables
+
     proced permEnts(entero x, entero y) {
-        entero z;
+        def variables
+            entero z;
+        enddef variables
+
         z = x;
         x = y;
         y = z;
     }
+
     f0 = 0;
     f1 = 1;
-    para i = 1 hasta n {
+    para (i = 0; i < n; ++i) {
         permEnts(f0, f1);
         f1 = f0 + f1;
     }
+
     f = f1;
 }
 

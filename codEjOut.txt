@@ -18,6 +18,8 @@ Parentesis derecha
  277
 Llave izquierda
  280
+Marca de inicio de declaración de variables
+ 286
 Tipo primitivo: entero
  258
 Identificador: f0
@@ -26,8 +28,18 @@ Coma
  282
 Identificador: f1
  273
+Coma
+ 282
+Identificador: f
+ 273
+Coma
+ 282
+Identificador: i
+ 273
 Punto y coma
  283
+Marca de fin de declaración de variables
+ 287
 Clave de subprograma
  257
 Identificador: permEnts
@@ -48,12 +60,16 @@ Parentesis derecha
  277
 Llave izquierda
  280
+Marca de inicio de declaración de variables
+ 286
 Tipo primitivo: entero
  258
 Identificador: z
  273
 Punto y coma
  283
+Marca de fin de declaración de variables
+ 287
 Identificador: z
  273
 Asignación =
@@ -98,16 +114,30 @@ Punto y coma
  283
 Estructura for
  264
+Parentesis izquierda
+ 276
 Identificador: i
  273
 Asignación =
  284
-Constante: 1
+Constante: 0
  275
-Identificador: hasta
+Punto y coma
+ 283
+Identificador: i
  273
+Operación binaria: <
+ 270
 Identificador: n
  273
+Punto y coma
+ 283
+Primera parte de operación ternaria o bien una operación unaria: ++
+ 268
+Identificador: i
+ 273
+Parentesis derecha
+ 277
 Llave izquierda
  280
 Identificador: permEnts
