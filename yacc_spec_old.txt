@@ -8,13 +8,26 @@
 %token ASIGN
 %token MARCA_INI_DECLAR_VARIABLES MARCA_FIN_DECLAR_VARIABLES
 
+%token bloque
+%token Inicio_de_bloque Declar_de_variables_locales Declar_de_subprogs Sentencias Fin_de_bloque
+%token Declar_subprog
+%token Cabecera_subprograma
+%token Variables_locales Cuerpo_declar_variables
+%token lista_argumentos tipo
+%token lista_expresiones expresion
+%token lista_identificadores
+%token Sentencia
+%token sentencia_asignacion sentencia_if sentencia_while sentencia_for sentencia_entrada sentencia_salida llamada_proced
+%token nomb_entrada nomb_salida lista_expresiones_o_cadena
+%token constante
+
 %start Programa
 
 %%
 
 Programa : CABECERA_PROGRAMA bloque;
 
-bloque : Inicio_de_bloque Declar_de_variables_locales Declar_de_subprogs Sentencias Fin_de_bloque
+bloque : Inicio_de_bloque Declar_de_variables_locales Delar_de_subprogs Sentencias Fin_de_bloque
 ;
 
 Declar_de_subprogs : Declar_de_subprogs Declar_subprog
@@ -96,10 +109,10 @@ sentencia_while : NOMB_WHILE PARIZQ expresion PARDER Sentencia
 sentencia_for : NOMB_FOR PARIZQ sentencia_asignacion expresion PYC Sentencia PARDER Sentencia
 ;
 
-sentencia_entrada : NOMB_ENTRADA lista_identificadores PYC
+sentencia_entrada : nomb_entrada lista_identificadores PYC
 ;
 
-sentencia_salida : NOMB_SALIDA lista_expresiones_o_cadena PYC
+sentencia_salida : nomb_salida lista_expresiones_o_cadena PYC
 ;
 
 lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena 
@@ -114,13 +127,12 @@ expresion : PARIZQ expresion PARDER
           | expresion OP_BINARIO expresion
           | OP_UN_BIN expresion
           | expresion OP_UN_BIN expresion
-          | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
+          | expresion OP_TERN_PRIM expresion OP_TERN_SEG expresion
           | IDENTIFICADOR
-          | CONSTANTE
-          | constante_lista
+          | constante
 ;
 
-constante_lista : CORIZQ lista_expresiones CORDER
+constante_lista : CORCHIZQ lista_expresiones CORCHDER
 ;
 %%
 
