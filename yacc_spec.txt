@@ -2,7 +2,10 @@
 %token TIPO_PRIM TIPO_LISTA
 %token NOMB_IF NOMB_THEN NOMB_ELSE NOMB_WHILE NOMB_FOR NOMB_ENTRADA NOMB_SALIDA
 %token LISTA_SENT
-%token OP_TERN_PRIM_UN OP_TERN_SEG OP_BINARIO OP_UNARIO OP_UN_BIN
+%token OP_TERN_PRIM_UN OP_TERN_SEG
+%token OP_UN_BIN
+%token OP_UNARIO
+%token OP_BINARIO
 %token IDENTIFICADOR CADENA CONSTANTE PARIZQ PARDER CORIZQ CORDER LLAVIZQ LLAVDER
 %token COMA PYC
 %token ASIGN
@@ -10,6 +13,9 @@
 
 %start Programa
 
+%right OP_UNARIO
+%left OP_BINARIO
+%right OP_UN_BIN
 %%
 
 Programa : CABECERA_PROGRAMA bloque;
@@ -22,7 +28,6 @@ Declar_de_subprogs : Declar_de_subprogs Declar_subprog
 ;
 
 Declar_subprog : Cabecera_subprograma bloque
-               |
 ;
 
 Declar_de_variables_locales : MARCA_INI_DECLAR_VARIABLES Variables_locales MARCA_FIN_DECLAR_VARIABLES
@@ -65,7 +70,7 @@ tipo : TIPO_PRIM
 ;
 
 Sentencias : Sentencia Sentencias
-           | Sentencia
+           |
 ;
 
 Sentencia : bloque
@@ -77,7 +82,6 @@ Sentencia : bloque
           | sentencia_salida
           | llamada_proced
           | IDENTIFICADOR LISTA_SENT
-          |
 ;
 
 llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC
