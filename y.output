@@ -1,0 +1,182 @@
+Terminals which are not used
+
+   SUBPROG_CLAVE
+   TIPO_PRIM
+   TIPO_LISTA
+   NOMB_IF
+   NOMB_THEN
+   NOMB_ELSE
+   NOMB_WHILE
+   NOMB_FOR
+   NOMB_ENTRADA
+   NOMB_SALIDA
+   LISTA_SENT
+   OP_TERN_PRIM_UN
+   OP_TERN_SEG
+   OP_BINARIO
+   OP_UNARIO
+   OP_UN_BIN
+   IDENTIFICADOR
+   CADENA
+   CONSTANTE
+   PARIZQ
+   PARDER
+   CORIZQ
+   CORDER
+   LLAVIZQ
+   LLAVDER
+   COMA
+   PYC
+   MARCA_INI_DECLAR_VARIABLES
+   MARCA_FIN_DECLAR_VARIABLES
+   Inicio_de_bloque
+   Declar_de_variables_locales
+   Declar_de_subprogs
+   Sentencias
+   Fin_de_bloque
+   Declar_de_subprog
+   Cabecera_subprograma
+   Variables_locales
+   Cuerpo_declar_variables
+   lista_argumentos
+   tipo
+   lista_expresiones
+   expresion
+   lista_identificadores
+   Sentencia
+   sentencia_asignacion
+   sentencia_if
+   sentencia_while
+   sentencia_for
+   sentencia_entrada
+   sentencia_salida
+   llamada_proced
+   nomb_entrada
+   nomb_salida
+   lista_expresiones_o_cadena
+   constante
+
+
+Grammar
+
+    0 $accept: Programa $end
+
+    1 Programa: CABECERA_PROGRAMA bloque
+    2         | ASIGN
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+SUBPROG_CLAVE (258)
+CABECERA_PROGRAMA (259) 1
+TIPO_PRIM (260)
+TIPO_LISTA (261)
+NOMB_IF (262)
+NOMB_THEN (263)
+NOMB_ELSE (264)
+NOMB_WHILE (265)
+NOMB_FOR (266)
+NOMB_ENTRADA (267)
+NOMB_SALIDA (268)
+LISTA_SENT (269)
+OP_TERN_PRIM_UN (270)
+OP_TERN_SEG (271)
+OP_BINARIO (272)
+OP_UNARIO (273)
+OP_UN_BIN (274)
+IDENTIFICADOR (275)
+CADENA (276)
+CONSTANTE (277)
+PARIZQ (278)
+PARDER (279)
+CORIZQ (280)
+CORDER (281)
+LLAVIZQ (282)
+LLAVDER (283)
+COMA (284)
+PYC (285)
+ASIGN (286) 2
+MARCA_INI_DECLAR_VARIABLES (287)
+MARCA_FIN_DECLAR_VARIABLES (288)
+bloque (289) 1
+Inicio_de_bloque (290)
+Declar_de_variables_locales (291)
+Declar_de_subprogs (292)
+Sentencias (293)
+Fin_de_bloque (294)
+Declar_de_subprog (295)
+Cabecera_subprograma (296)
+Variables_locales (297)
+Cuerpo_declar_variables (298)
+lista_argumentos (299)
+tipo (300)
+lista_expresiones (301)
+expresion (302)
+lista_identificadores (303)
+Sentencia (304)
+sentencia_asignacion (305)
+sentencia_if (306)
+sentencia_while (307)
+sentencia_for (308)
+sentencia_entrada (309)
+sentencia_salida (310)
+llamada_proced (311)
+nomb_entrada (312)
+nomb_salida (313)
+lista_expresiones_o_cadena (314)
+constante (315)
+
+
+Nonterminals, with rules where they appear
+
+$accept (61)
+    on left: 0
+Programa (62)
+    on left: 1 2, on right: 0
+
+
+state 0
+
+    0 $accept: . Programa $end
+
+    CABECERA_PROGRAMA  shift, and go to state 1
+    ASIGN              shift, and go to state 2
+
+    Programa  go to state 3
+
+
+state 1
+
+    1 Programa: CABECERA_PROGRAMA . bloque
+
+    bloque  shift, and go to state 4
+
+
+state 2
+
+    2 Programa: ASIGN .
+
+    $default  reduce using rule 2 (Programa)
+
+
+state 3
+
+    0 $accept: Programa . $end
+
+    $end  shift, and go to state 5
+
+
+state 4
+
+    1 Programa: CABECERA_PROGRAMA bloque .
+
+    $default  reduce using rule 1 (Programa)
+
+
+state 5
+
+    0 $accept: Programa $end .
+
+    $default  accept

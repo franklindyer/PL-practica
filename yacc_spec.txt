@@ -1,30 +1,38 @@
-%token SUBPROG_CLAVE, CABECERA_PROGRAMA
-%token TIPO_PRIM, TIPO_LISTA
-%token NOMB_IF, NOMB_THEN, NOMB_ELSE, NOMB_WHILE, NOMB_FOR, NOMB_ENTRADA, NOMB_SALIDA
+%token SUBPROG_CLAVE CABECERA_PROGRAMA
+%token TIPO_PRIM TIPO_LISTA
+%token NOMB_IF NOMB_THEN NOMB_ELSE NOMB_WHILE NOMB_FOR NOMB_ENTRADA NOMB_SALIDA
 %token LISTA_SENT
-%token OP_TERN_PRIM_UN, OP_TERN_SEG, OP_BINARIO, OP_UNARIO, OP_UN_BIN
-%token IDENTIFICADOR, CADENA, CONSTANTE, PARIZQ, PARDER, CORIZQ, CORDER, LLAVIZQ, LLAVDER
-%token COMA, PYC
+%token OP_TERN_PRIM_UN OP_TERN_SEG OP_BINARIO OP_UNARIO OP_UN_BIN
+%token IDENTIFICADOR CADENA CONSTANTE PARIZQ PARDER CORIZQ CORDER LLAVIZQ LLAVDER
+%token COMA PYC
 %token ASIGN
-%token MARCA_INI_DECLAR_VARIABLES, MARCA_FIN_DECLAR_VARIABLES
+%token MARCA_INI_DECLAR_VARIABLES MARCA_FIN_DECLAR_VARIABLES
 
 %token bloque
-%token Inicio_de_bloque, Declar_de_variables_locales, Declar_de_subprogs, Sentencias, Fin_de_bloque
+%token Inicio_de_bloque Declar_de_variables_locales Declar_de_subprogs Sentencias Fin_de_bloque
 %token Declar_de_subprog
 %token Cabecera_subprograma
-%token Variables_locales, Cuerpo_declar_variables
-%token lista_argumentos, tipo
-%token lista_expresiones, expresion
+%token Variables_locales Cuerpo_declar_variables
+%token lista_argumentos tipo
+%token lista_expresiones expresion
 %token lista_identificadores
 %token Sentencia
-%token sentencia_asignacion, sentencia_if, sentencia_while, sentencia_for, sentencia_entrada, sentencia_salida, llamada_proced
-% nomb_entrada, nomb_salida, lista_expresiones_o_cadena
+%token sentencia_asignacion sentencia_if sentencia_while sentencia_for sentencia_entrada sentencia_salida llamada_proced
+%token nomb_entrada nomb_salida lista_expresiones_o_cadena
 %token constante
 
 %start Programa
 
 %%
+
 Programa : CABECERA_PROGRAMA bloque
          | ASIGN
 ;
 %%
+
+#include "lex.yy.c"
+#include "error.y"
+
+int main () {
+    yyparse();
+}
