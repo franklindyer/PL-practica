@@ -16,6 +16,7 @@
 %right OP_UNARIO
 %left OP_BINARIO
 %right OP_UN_BIN
+%left OP_TERN_PRIM_UN OP_TERN_SEG
 %%
 
 Programa : CABECERA_PROGRAMA bloque;

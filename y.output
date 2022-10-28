@@ -1,9 +1,4 @@
-State 68 conflicts: 1 shift/reduce
-State 69 conflicts: 1 shift/reduce
-State 92 conflicts: 1 shift/reduce
-State 93 conflicts: 1 shift/reduce
 State 100 conflicts: 7 shift/reduce
-State 109 conflicts: 3 shift/reduce
 
 
 Grammar
@@ -887,8 +882,7 @@ state 68
     OP_TERN_PRIM_UN  shift, and go to state 75
     OP_UN_BIN        shift, and go to state 76
 
-    OP_TERN_PRIM_UN  [reduce using rule 52 (expresion)]
-    $default         reduce using rule 52 (expresion)
+    $default  reduce using rule 52 (expresion)
 
 
 state 69
@@ -902,8 +896,7 @@ state 69
     OP_UN_BIN        shift, and go to state 76
     OP_BINARIO       shift, and go to state 77
 
-    OP_TERN_PRIM_UN  [reduce using rule 50 (expresion)]
-    $default         reduce using rule 50 (expresion)
+    $default  reduce using rule 50 (expresion)
 
 
 state 70
@@ -1181,8 +1174,7 @@ state 92
     OP_TERN_PRIM_UN  shift, and go to state 75
     OP_UN_BIN        shift, and go to state 76
 
-    OP_TERN_PRIM_UN  [reduce using rule 53 (expresion)]
-    $default         reduce using rule 53 (expresion)
+    $default  reduce using rule 53 (expresion)
 
 
 state 93
@@ -1195,8 +1187,7 @@ state 93
     OP_TERN_PRIM_UN  shift, and go to state 75
     OP_UN_BIN        shift, and go to state 76
 
-    OP_TERN_PRIM_UN  [reduce using rule 51 (expresion)]
-    $default         reduce using rule 51 (expresion)
+    $default  reduce using rule 51 (expresion)
 
 
 state 94
@@ -1373,14 +1364,7 @@ state 109
    54          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
    54          | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion .
 
-    OP_TERN_PRIM_UN  shift, and go to state 75
-    OP_UN_BIN        shift, and go to state 76
-    OP_BINARIO       shift, and go to state 77
-
-    OP_TERN_PRIM_UN  [reduce using rule 54 (expresion)]
-    OP_UN_BIN        [reduce using rule 54 (expresion)]
-    OP_BINARIO       [reduce using rule 54 (expresion)]
-    $default         reduce using rule 54 (expresion)
+    $default  reduce using rule 54 (expresion)
 
 
 state 110
