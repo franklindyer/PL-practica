@@ -1,3 +1,30 @@
+%{
+#include <stdio.h>
+#include <string.h>
+
+int yylineno;
+
+int yylex();
+
+int yyparse();
+
+void yyerror(const char *str)
+{
+    fprintf(stderr, "error: %s, linea %d\n", str, yylineno);
+}
+
+int yywrap()
+{
+    return 1;
+}
+
+main()
+{
+    yyparse();
+}
+
+%}
+
 %token SUBPROG_CLAVE CABECERA_PROGRAMA
 %token TIPO_PRIM TIPO_LISTA
 %token NOMB_IF NOMB_THEN NOMB_ELSE NOMB_WHILE NOMB_FOR NOMB_ENTRADA NOMB_SALIDA
@@ -13,10 +40,17 @@
 
 %start Programa
 
+%left NOMB_WHILE NOMB_FOR
+%right NOMB_IF NOMB_THEN NOMB_ELSE
+
 %right OP_UNARIO
 %left OP_BINARIO
 %right OP_UN_BIN
 %left OP_TERN_PRIM_UN OP_TERN_SEG
+
+%left NOMB_ENTRADA NOMB_SALIDA
+%left IDENTIFICADOR
+
 %%
 
 Programa : CABECERA_PROGRAMA bloque;
@@ -25,7 +59,7 @@ bloque : Inicio_de_bloque Declar_de_variables_locales Declar_de_subprogs Sentenc
 ;
 
 Declar_de_subprogs : Declar_de_subprogs Declar_subprog
-                   | 
+                   |
 ;
 
 Declar_subprog : Cabecera_subprograma bloque
@@ -107,7 +141,7 @@ sentencia_entrada : NOMB_ENTRADA lista_identificadores PYC
 sentencia_salida : NOMB_SALIDA lista_expresiones_o_cadena PYC
 ;
 
-lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena 
+lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena
                            | CADENA COMA lista_expresiones_o_cadena
                            | expresion
                            | CADENA
@@ -127,11 +161,3 @@ expresion : PARIZQ expresion PARDER
 
 constante_lista : CORIZQ lista_expresiones CORDER
 ;
-%%
-
-#include "lex.yy.c"
-#include "error.y"
-
-int main () {
-    yyparse();
-}

@@ -1,11 +1,7 @@
-%option noyywrap
 %{
 #include <stdio.h>
-#include <string.h>
-#include "tabla.h"
-
-int linea_actual = 0;
-int DEBUG = 1;
+#include "y.tab.h"
+#define DEBUG 1
 %}
 
 CABECERA_PROGRAMA "principal"
@@ -44,15 +40,14 @@ PANICO .
 
 %%
 
-{ESPACIO}+ ;
-
 {CABECERA_PROGRAMA} {
     if (DEBUG) printf("Cabecera de programa\n");
+    return CABECERA_PROGRAMA;
 }
 
 {SUBPROG_CLAVE} {
     if (DEBUG) printf("Clave de subprograma\n");
-    return SUBPROG_CLAVE; 
+    return SUBPROG_CLAVE;
 }
 
 {MARCA_INI_DECLAR_VARIABLES} {
@@ -200,20 +195,7 @@ PANICO .
     return ASIGN;
 }
 
-{PANICO} {
-    if (DEBUG) printf("Modo pánico!\n");
-}
+\n {yylineno++;};
+[ \t] ;
 
 %%
-
-main ()
-{
-	int val;
-	val= yylex() ;
-	while (val != 0)
-	{
-		printf (" %d\n", val);
-		val= yylex() ;
-	}
-	exit (0);
-}

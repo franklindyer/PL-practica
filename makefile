@@ -1,3 +1,3 @@
 flex pract.l
-gcc lex.yy.c
-yacc -v yacc_spec.txt
+yacc -d pract.y
+cc lex.yy.c y.tab.c
