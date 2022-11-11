@@ -332,9 +332,6 @@ void yyfree (void *  );
 
 /* Begin user sect3 */
 
-#define yywrap(n) 1
-#define YY_SKIP_YYWRAP
-
 typedef unsigned char YY_CHAR;
 
 FILE *yyin = (FILE *) 0, *yyout = (FILE *) 0;
@@ -557,11 +554,11 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "pract.l"
-#line 3 "pract.l"
+#line 2 "pract.l"
 #include <stdio.h>
 #include "y.tab.h"
 #define DEBUG 1
-#line 565 "lex.yy.c"
+#line 562 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -743,10 +740,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 42 "pract.l"
+#line 41 "pract.l"
 
 
-#line 750 "lex.yy.c"
+#line 747 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -831,7 +828,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 44 "pract.l"
+#line 43 "pract.l"
 {
     if (DEBUG) printf("Cabecera de programa\n");
     return CABECERA_PROGRAMA;
@@ -839,7 +836,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 49 "pract.l"
+#line 48 "pract.l"
 {
     if (DEBUG) printf("Clave de subprograma\n");
     return SUBPROG_CLAVE;
@@ -847,7 +844,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 54 "pract.l"
+#line 53 "pract.l"
 {
     if (DEBUG) printf("Marca de inicio de declaración de variables\n");
     return MARCA_INI_DECLAR_VARIABLES;
@@ -855,7 +852,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 59 "pract.l"
+#line 58 "pract.l"
 {
     if (DEBUG) printf("Marca de fin de declaración de variables\n");
     return MARCA_FIN_DECLAR_VARIABLES;
@@ -863,7 +860,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 64 "pract.l"
+#line 63 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: entero\n");
     return TIPO_PRIM;
@@ -871,7 +868,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 69 "pract.l"
+#line 68 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: real\n");
     return TIPO_PRIM;
@@ -879,7 +876,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 74 "pract.l"
+#line 73 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: caracter\n");
     return TIPO_PRIM;
@@ -887,7 +884,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 79 "pract.l"
+#line 78 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: booleano\n");
     return TIPO_PRIM;
@@ -895,7 +892,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 84 "pract.l"
+#line 83 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: cadena\n");
     return TIPO_PRIM;
@@ -903,7 +900,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 89 "pract.l"
+#line 88 "pract.l"
 {
     if (DEBUG) printf("Tipo de lista\n");
     return TIPO_LISTA;
@@ -911,7 +908,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 94 "pract.l"
+#line 93 "pract.l"
 {
     if (DEBUG) printf("Estructura if\n");
     return NOMB_IF;
@@ -919,7 +916,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 99 "pract.l"
+#line 98 "pract.l"
 {
     if (DEBUG) printf("Estructura then\n");
     return NOMB_THEN;
@@ -927,7 +924,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 104 "pract.l"
+#line 103 "pract.l"
 {
     if (DEBUG) printf("Estructura else\n");
     return NOMB_ELSE;
@@ -935,7 +932,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 109 "pract.l"
+#line 108 "pract.l"
 {
     if (DEBUG) printf("Estructura while\n");
     return NOMB_WHILE;
@@ -943,7 +940,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 114 "pract.l"
+#line 113 "pract.l"
 {
     if (DEBUG) printf("Estructura for\n");
     return NOMB_FOR;
@@ -951,7 +948,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 119 "pract.l"
+#line 118 "pract.l"
 {
     if (DEBUG) printf("Aceptar entrada\n");
     return NOMB_ENTRADA;
@@ -959,7 +956,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 124 "pract.l"
+#line 123 "pract.l"
 {
     if (DEBUG) printf("Producir salida\n");
     return NOMB_SALIDA;
@@ -967,7 +964,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 129 "pract.l"
+#line 128 "pract.l"
 {
     if (DEBUG) printf("Operación de listas: <<\n");
     return LISTA_SENT;
@@ -975,7 +972,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 134 "pract.l"
+#line 133 "pract.l"
 {
     if (DEBUG) printf("Operación de listas: >>\n");
     return LISTA_SENT;
@@ -983,7 +980,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 139 "pract.l"
+#line 138 "pract.l"
 {
     if (DEBUG) printf("Operación de listas: $\n");
     return LISTA_SENT;
@@ -991,7 +988,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 144 "pract.l"
+#line 143 "pract.l"
 {
     if (DEBUG) printf("Primera parte de operación ternaria o bien una operación unaria: %s\n", yytext);
     return OP_TERN_PRIM_UN;
@@ -999,7 +996,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 149 "pract.l"
+#line 148 "pract.l"
 {
     if (DEBUG) printf("Segunda parte de operación ternaria: %s\n", yytext);
     return OP_TERN_SEG;
@@ -1007,7 +1004,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 154 "pract.l"
+#line 153 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: %s\n", "%");
     return OP_BINARIO;
@@ -1015,7 +1012,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 159 "pract.l"
+#line 158 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: *\n");
     return OP_BINARIO;
@@ -1023,7 +1020,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 164 "pract.l"
+#line 163 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: /\n");
     return OP_BINARIO;
@@ -1031,7 +1028,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 169 "pract.l"
+#line 168 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: ==\n");
     return OP_BINARIO;
@@ -1039,7 +1036,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 174 "pract.l"
+#line 173 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: <\n");
     return OP_BINARIO;
@@ -1047,7 +1044,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 179 "pract.l"
+#line 178 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: >\n");
     return OP_BINARIO;
@@ -1055,7 +1052,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 184 "pract.l"
+#line 183 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: <=\n");
     return OP_BINARIO;
@@ -1063,7 +1060,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 189 "pract.l"
+#line 188 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: >=\n");
     return OP_BINARIO;
@@ -1071,7 +1068,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 194 "pract.l"
+#line 193 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: !=\n");
     return OP_BINARIO;
@@ -1079,7 +1076,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 199 "pract.l"
+#line 198 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: &&\n");
     return OP_BINARIO;
@@ -1087,7 +1084,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 204 "pract.l"
+#line 203 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: ||\n");
     return OP_BINARIO;
@@ -1095,7 +1092,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 209 "pract.l"
+#line 208 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: ^\n");
     return OP_BINARIO;
@@ -1103,7 +1100,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 214 "pract.l"
+#line 213 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: **\n");
     return OP_BINARIO;
@@ -1111,7 +1108,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 219 "pract.l"
+#line 218 "pract.l"
 {
     if (DEBUG) printf("Operación unaria: !\n");
     return OP_UNARIO;
@@ -1119,7 +1116,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 224 "pract.l"
+#line 223 "pract.l"
 {
     if (DEBUG) printf("Operación unaria: #\n");
     return OP_UNARIO;
@@ -1127,7 +1124,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 229 "pract.l"
+#line 228 "pract.l"
 {
     if (DEBUG) printf("Operación unaria: ?\n");
     return OP_UNARIO;
@@ -1135,7 +1132,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 234 "pract.l"
+#line 233 "pract.l"
 {
     if (DEBUG) printf("Operación unaria: --\n");
     return OP_UNARIO;
@@ -1143,7 +1140,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 241 "pract.l"
+#line 240 "pract.l"
 {
     if (DEBUG) printf("Operación que puede ser o unaria o binaria: +\n");
     return OP_UN_BIN;
@@ -1151,7 +1148,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 246 "pract.l"
+#line 245 "pract.l"
 {
     if (DEBUG) printf("Operación que puede ser o unaria o binaria: -\n");
     return OP_UN_BIN;
@@ -1159,7 +1156,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 251 "pract.l"
+#line 250 "pract.l"
 {
     if (DEBUG) printf("Identificador: %s\n", yytext);
     return IDENTIFICADOR;
@@ -1168,7 +1165,7 @@ YY_RULE_SETUP
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
-#line 256 "pract.l"
+#line 255 "pract.l"
 {
     if (DEBUG) printf("Cadena: %s\n", yytext);
     return CADENA;
@@ -1176,7 +1173,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 261 "pract.l"
+#line 260 "pract.l"
 {
     if (DEBUG) printf("Constante: %s\n", yytext);
     return CONSTANTE;
@@ -1184,7 +1181,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 266 "pract.l"
+#line 265 "pract.l"
 {
     if (DEBUG) printf("Parentesis izquierda\n");
     return PARIZQ;
@@ -1192,7 +1189,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 271 "pract.l"
+#line 270 "pract.l"
 {
     if (DEBUG) printf("Parentesis derecha\n");
     return PARDER;
@@ -1200,7 +1197,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 276 "pract.l"
+#line 275 "pract.l"
 {
     if (DEBUG) printf("Corchete izquierda\n");
     return CORIZQ;
@@ -1208,7 +1205,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 281 "pract.l"
+#line 280 "pract.l"
 {
     if (DEBUG) printf("Corchete derecha\n");
     return CORDER;
@@ -1216,7 +1213,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 286 "pract.l"
+#line 285 "pract.l"
 {
     if (DEBUG) printf("Llave izquierda\n");
     return LLAVIZQ;
@@ -1224,7 +1221,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 291 "pract.l"
+#line 290 "pract.l"
 {
     if (DEBUG) printf("Llave derecha\n");
     return LLAVDER;
@@ -1232,7 +1229,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 296 "pract.l"
+#line 295 "pract.l"
 {
     if (DEBUG) printf("Coma\n");
     return COMA;
@@ -1240,7 +1237,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 301 "pract.l"
+#line 300 "pract.l"
 {
     if (DEBUG) printf("Punto y coma\n");
     return PYC;
@@ -1248,7 +1245,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 306 "pract.l"
+#line 305 "pract.l"
 {
     if (DEBUG) printf("Asignación =\n");
     return ASIGN;
@@ -1257,27 +1254,27 @@ YY_RULE_SETUP
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 311 "pract.l"
+#line 310 "pract.l"
 {yylineno++;};
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 312 "pract.l"
+#line 311 "pract.l"
 ;
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 314 "pract.l"
+#line 313 "pract.l"
 {
     printf("\n(Linea %d) Error léxico: token %s\n", yylineno, yytext);
 }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 318 "pract.l"
+#line 317 "pract.l"
 ECHO;
 	YY_BREAK
-#line 1281 "lex.yy.c"
+#line 1278 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2274,7 +2271,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 318 "pract.l"
+#line 317 "pract.l"
 
 
 

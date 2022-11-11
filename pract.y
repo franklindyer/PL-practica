@@ -90,9 +90,8 @@ lista_argumentos : lista_argumentos COMA tipo IDENTIFICADOR
 
 lista_identificadores : lista_identificadores COMA IDENTIFICADOR
                       | IDENTIFICADOR
-                      |
                       | lista_identificadores IDENTIFICADOR error
-                        { printf("Hace falta un coma en la lista de identificadores en la linea %d\n", yylineno); }
+                        { printf("Hace falta un coma en la lista de identificadores en la linea %d\n", yylineno); yyerrok; }
 ;
 
 lista_expresiones : lista_expresiones COMA expresion
@@ -101,6 +100,10 @@ lista_expresiones : lista_expresiones COMA expresion
 ;
 
 Cuerpo_declar_variables : tipo lista_identificadores PYC
+                        | error lista_identificadores PYC
+                            { printf("Hace falta el tipo de los variables en la linea %d\n", yylineno); yyerrok; }
+                        | tipo lista_identificadores error
+                            { printf("Hace falta punto y coma en la declaracion de variables en la linea %d\n", yylineno); yyerrok; }
 ;
 
 tipo : TIPO_PRIM
@@ -123,6 +126,7 @@ Sentencia : bloque
 ;
 
 llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC
+               | IDENTIFICADOR PARIZQ PARDER PYC
 ;
 
 sentencia_asignacion : IDENTIFICADOR ASIGN expresion PYC
