@@ -1,0 +1,100 @@
+Cabecera de programa
+Llave izquierda
+Marca de inicio de declaración de variables
+Identificador: en
+
+(Linea 3) Error léxico: token ~
+
+(Linea 3) Error léxico: token ~
+
+(Linea 3) Error léxico: token ~
+Identificador: f0
+Coma
+Identificador: f1
+Punto y coma
+Tipo primitivo: entero
+Identificador: n
+Punto y coma
+Identificador: e
+
+(Linea 5) Error léxico: token ~
+
+(Linea 5) Error léxico: token ~
+
+(Linea 5) Error léxico: token ~
+Identificador: nddef
+Identificador: variables
+Clave de subprograma
+Identificador: fibo
+Parentesis izquierda
+Tipo primitivo: entero
+Identificador: f0
+Coma
+Tipo primitivo: entero
+Identificador: f1
+Coma
+Tipo primitivo: entero
+Identificador: n
+Parentesis derecha
+Llave izquierda
+Estructura while
+Parentesis izquierda
+Identificador: n
+Operación binaria: >
+Constante: 0
+Parentesis derecha
+Llave izquierda
+Identificador: f
+
+(Linea 9) Error léxico: token ~
+
+(Linea 9) Error léxico: token ~
+
+(Linea 9) Error léxico: token ~
+
+(Linea 9) Error léxico: token ~
+Constante: 1
+Asignación =
+Identificador: f1
+Operación que puede ser o unaria o binaria: +
+Identificador: f0
+Punto y coma
+Identificador: f0
+Asignación =
+Identificador: f1
+Operación que puede ser o unaria o binaria: -
+Identificador: f0
+Punto y coma
+Identificador: n
+Asignación =
+Identificador: n
+Operación que puede ser o unaria o binaria: -
+Constante: 1
+Punto y coma
+Llave derecha
+Llave derecha
+Identificador: f0
+Asignación =
+Constante: 1
+Punto y coma
+Identificador: f1
+Asignación =
+Constante: 1
+Punto y coma
+Identificador: n
+Asignación =
+Constante: 10
+Punto y coma
+Identificador: fibo
+Parentesis izquierda
+Identificador: f0
+Coma
+Identificador: f1
+Coma
+Identificador: n
+Parentesis derecha
+Punto y coma
+Producir salida
+Identificador: f1
+Punto y coma
+Llave derecha

@@ -24,6 +24,7 @@ main()
 }
 
 %}
+%error-verbose
 
 %token SUBPROG_CLAVE CABECERA_PROGRAMA
 %token TIPO_PRIM TIPO_LISTA
@@ -90,6 +91,8 @@ lista_argumentos : lista_argumentos COMA tipo IDENTIFICADOR
 lista_identificadores : lista_identificadores COMA IDENTIFICADOR
                       | IDENTIFICADOR
                       |
+                      | lista_identificadores IDENTIFICADOR error
+                        { printf("Hace falta un coma en la lista de identificadores en la linea %d\n", yylineno); }
 ;
 
 lista_expresiones : lista_expresiones COMA expresion
@@ -157,6 +160,7 @@ expresion : PARIZQ expresion PARDER
           | IDENTIFICADOR
           | CONSTANTE
           | constante_lista
+          | error { printf("Error en expresión aritmeto-lógica.\n"); }
 ;
 
 constante_lista : CORIZQ lista_expresiones CORDER
