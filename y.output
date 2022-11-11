@@ -39,7 +39,7 @@ Grammar
    21                  | /* empty */
 
    22 Cuerpo_declar_variables: tipo lista_identificadores PYC
-   23                        | error lista_identificadores PYC
+   23                        | lista_identificadores PYC error
    24                        | tipo lista_identificadores error
 
    25 tipo: TIPO_PRIM
@@ -271,13 +271,14 @@ state 9
     6 Declar_de_variables_locales: MARCA_INI_DECLAR_VARIABLES Variables_locales . MARCA_FIN_DECLAR_VARIABLES
    11 Variables_locales: Variables_locales . Cuerpo_declar_variables
 
-    error                       shift, and go to state 11
-    TIPO_PRIM                   shift, and go to state 12
-    TIPO_LISTA                  shift, and go to state 13
+    TIPO_PRIM                   shift, and go to state 11
+    TIPO_LISTA                  shift, and go to state 12
+    IDENTIFICADOR               shift, and go to state 13
     MARCA_FIN_DECLAR_VARIABLES  shift, and go to state 14
 
-    Cuerpo_declar_variables  go to state 15
-    tipo                     go to state 16
+    lista_identificadores    go to state 15
+    Cuerpo_declar_variables  go to state 16
+    tipo                     go to state 17
 
 
 state 10
@@ -285,53 +286,51 @@ state 10
     2 bloque: Inicio_de_bloque Declar_de_variables_locales Declar_de_subprogs . Sentencias Fin_de_bloque
     3 Declar_de_subprogs: Declar_de_subprogs . Declar_subprog
 
-    SUBPROG_CLAVE  shift, and go to state 17
-    NOMB_IF        shift, and go to state 18
-    NOMB_WHILE     shift, and go to state 19
-    NOMB_FOR       shift, and go to state 20
-    NOMB_ENTRADA   shift, and go to state 21
-    NOMB_SALIDA    shift, and go to state 22
-    IDENTIFICADOR  shift, and go to state 23
+    SUBPROG_CLAVE  shift, and go to state 18
+    NOMB_IF        shift, and go to state 19
+    NOMB_WHILE     shift, and go to state 20
+    NOMB_FOR       shift, and go to state 21
+    NOMB_ENTRADA   shift, and go to state 22
+    NOMB_SALIDA    shift, and go to state 23
+    IDENTIFICADOR  shift, and go to state 24
     LLAVIZQ        shift, and go to state 3
 
     $default  reduce using rule 28 (Sentencias)
 
-    bloque                go to state 24
-    Declar_subprog        go to state 25
-    Cabecera_subprograma  go to state 26
+    bloque                go to state 25
+    Declar_subprog        go to state 26
+    Cabecera_subprograma  go to state 27
     Inicio_de_bloque      go to state 5
-    Sentencias            go to state 27
-    Sentencia             go to state 28
-    llamada_proced        go to state 29
-    sentencia_asignacion  go to state 30
-    sentencia_if          go to state 31
-    sentencia_while       go to state 32
-    sentencia_for         go to state 33
-    sentencia_entrada     go to state 34
-    sentencia_salida      go to state 35
+    Sentencias            go to state 28
+    Sentencia             go to state 29
+    llamada_proced        go to state 30
+    sentencia_asignacion  go to state 31
+    sentencia_if          go to state 32
+    sentencia_while       go to state 33
+    sentencia_for         go to state 34
+    sentencia_entrada     go to state 35
+    sentencia_salida      go to state 36
 
 
 state 11
-
-   23 Cuerpo_declar_variables: error . lista_identificadores PYC
-
-    IDENTIFICADOR  shift, and go to state 36
-
-    lista_identificadores  go to state 37
-
-
-state 12
 
    25 tipo: TIPO_PRIM .
 
     $default  reduce using rule 25 (tipo)
 
 
-state 13
+state 12
 
    26 tipo: TIPO_LISTA . TIPO_PRIM
 
-    TIPO_PRIM  shift, and go to state 38
+    TIPO_PRIM  shift, and go to state 37
+
+
+state 13
+
+   17 lista_identificadores: IDENTIFICADOR .
+
+    $default  reduce using rule 17 (lista_identificadores)
 
 
 state 14
@@ -343,404 +342,418 @@ state 14
 
 state 15
 
+   16 lista_identificadores: lista_identificadores . COMA IDENTIFICADOR
+   18                      | lista_identificadores . IDENTIFICADOR error
+   23 Cuerpo_declar_variables: lista_identificadores . PYC error
+
+    IDENTIFICADOR  shift, and go to state 38
+    COMA           shift, and go to state 39
+    PYC            shift, and go to state 40
+
+
+state 16
+
    11 Variables_locales: Variables_locales Cuerpo_declar_variables .
 
     $default  reduce using rule 11 (Variables_locales)
 
 
-state 16
+state 17
 
    22 Cuerpo_declar_variables: tipo . lista_identificadores PYC
    24                        | tipo . lista_identificadores error
 
-    IDENTIFICADOR  shift, and go to state 36
+    IDENTIFICADOR  shift, and go to state 13
 
-    lista_identificadores  go to state 39
-
-
-state 17
-
-    8 Cabecera_subprograma: SUBPROG_CLAVE . IDENTIFICADOR PARIZQ lista_argumentos PARDER
-
-    IDENTIFICADOR  shift, and go to state 40
+    lista_identificadores  go to state 41
 
 
 state 18
 
-   40 sentencia_if: NOMB_IF . PARIZQ expresion PARDER NOMB_THEN
-   41 Sentencia: NOMB_IF . PARIZQ expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia
+    8 Cabecera_subprograma: SUBPROG_CLAVE . IDENTIFICADOR PARIZQ lista_argumentos PARDER
 
-    PARIZQ  shift, and go to state 41
+    IDENTIFICADOR  shift, and go to state 42
 
 
 state 19
 
-   42 sentencia_while: NOMB_WHILE . PARIZQ expresion PARDER Sentencia
-
-    PARIZQ  shift, and go to state 42
-
-
-state 20
-
-   43 sentencia_for: NOMB_FOR . PARIZQ sentencia_asignacion expresion PYC Sentencia PARDER Sentencia
+   40 sentencia_if: NOMB_IF . PARIZQ expresion PARDER NOMB_THEN
+   41 Sentencia: NOMB_IF . PARIZQ expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia
 
     PARIZQ  shift, and go to state 43
 
 
+state 20
+
+   42 sentencia_while: NOMB_WHILE . PARIZQ expresion PARDER Sentencia
+
+    PARIZQ  shift, and go to state 44
+
+
 state 21
 
-   44 sentencia_entrada: NOMB_ENTRADA . lista_identificadores PYC
+   43 sentencia_for: NOMB_FOR . PARIZQ sentencia_asignacion expresion PYC Sentencia PARDER Sentencia
 
-    IDENTIFICADOR  shift, and go to state 36
-
-    lista_identificadores  go to state 44
+    PARIZQ  shift, and go to state 45
 
 
 state 22
 
-   45 sentencia_salida: NOMB_SALIDA . lista_expresiones_o_cadena PYC
+   44 sentencia_entrada: NOMB_ENTRADA . lista_identificadores PYC
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CADENA         shift, and go to state 49
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    IDENTIFICADOR  shift, and go to state 13
 
-    PYC  reduce using rule 50 (lista_expresiones_o_cadena)
-
-    lista_expresiones_o_cadena  go to state 53
-    expresion                   go to state 54
-    constante_lista             go to state 55
+    lista_identificadores  go to state 46
 
 
 state 23
+
+   45 sentencia_salida: NOMB_SALIDA . lista_expresiones_o_cadena PYC
+
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CADENA         shift, and go to state 51
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
+
+    PYC  reduce using rule 50 (lista_expresiones_o_cadena)
+
+    lista_expresiones_o_cadena  go to state 55
+    expresion                   go to state 56
+    constante_lista             go to state 57
+
+
+state 24
 
    37 Sentencia: IDENTIFICADOR . LISTA_SENT
    38 llamada_proced: IDENTIFICADOR . PARIZQ lista_expresiones PARDER PYC
    39 sentencia_asignacion: IDENTIFICADOR . ASIGN expresion PYC
 
-    LISTA_SENT  shift, and go to state 56
-    PARIZQ      shift, and go to state 57
-    ASIGN       shift, and go to state 58
+    LISTA_SENT  shift, and go to state 58
+    PARIZQ      shift, and go to state 59
+    ASIGN       shift, and go to state 60
 
 
-state 24
+state 25
 
    29 Sentencia: bloque .
 
     $default  reduce using rule 29 (Sentencia)
 
 
-state 25
+state 26
 
     3 Declar_de_subprogs: Declar_de_subprogs Declar_subprog .
 
     $default  reduce using rule 3 (Declar_de_subprogs)
 
 
-state 26
+state 27
 
     5 Declar_subprog: Cabecera_subprograma . bloque
 
     LLAVIZQ  shift, and go to state 3
 
-    bloque            go to state 59
+    bloque            go to state 61
     Inicio_de_bloque  go to state 5
-
-
-state 27
-
-    2 bloque: Inicio_de_bloque Declar_de_variables_locales Declar_de_subprogs Sentencias . Fin_de_bloque
-
-    LLAVDER  shift, and go to state 60
-
-    Fin_de_bloque  go to state 61
 
 
 state 28
 
+    2 bloque: Inicio_de_bloque Declar_de_variables_locales Declar_de_subprogs Sentencias . Fin_de_bloque
+
+    LLAVDER  shift, and go to state 62
+
+    Fin_de_bloque  go to state 63
+
+
+state 29
+
    27 Sentencias: Sentencia . Sentencias
 
-    NOMB_IF        shift, and go to state 18
-    NOMB_WHILE     shift, and go to state 19
-    NOMB_FOR       shift, and go to state 20
-    NOMB_ENTRADA   shift, and go to state 21
-    NOMB_SALIDA    shift, and go to state 22
-    IDENTIFICADOR  shift, and go to state 23
+    NOMB_IF        shift, and go to state 19
+    NOMB_WHILE     shift, and go to state 20
+    NOMB_FOR       shift, and go to state 21
+    NOMB_ENTRADA   shift, and go to state 22
+    NOMB_SALIDA    shift, and go to state 23
+    IDENTIFICADOR  shift, and go to state 24
     LLAVIZQ        shift, and go to state 3
 
     $default  reduce using rule 28 (Sentencias)
 
-    bloque                go to state 24
+    bloque                go to state 25
     Inicio_de_bloque      go to state 5
-    Sentencias            go to state 62
-    Sentencia             go to state 28
-    llamada_proced        go to state 29
-    sentencia_asignacion  go to state 30
-    sentencia_if          go to state 31
-    sentencia_while       go to state 32
-    sentencia_for         go to state 33
-    sentencia_entrada     go to state 34
-    sentencia_salida      go to state 35
+    Sentencias            go to state 64
+    Sentencia             go to state 29
+    llamada_proced        go to state 30
+    sentencia_asignacion  go to state 31
+    sentencia_if          go to state 32
+    sentencia_while       go to state 33
+    sentencia_for         go to state 34
+    sentencia_entrada     go to state 35
+    sentencia_salida      go to state 36
 
 
-state 29
+state 30
 
    36 Sentencia: llamada_proced .
 
     $default  reduce using rule 36 (Sentencia)
 
 
-state 30
+state 31
 
    30 Sentencia: sentencia_asignacion .
 
     $default  reduce using rule 30 (Sentencia)
 
 
-state 31
+state 32
 
    31 Sentencia: sentencia_if .
 
     $default  reduce using rule 31 (Sentencia)
 
 
-state 32
+state 33
 
    32 Sentencia: sentencia_while .
 
     $default  reduce using rule 32 (Sentencia)
 
 
-state 33
+state 34
 
    33 Sentencia: sentencia_for .
 
     $default  reduce using rule 33 (Sentencia)
 
 
-state 34
+state 35
 
    34 Sentencia: sentencia_entrada .
 
     $default  reduce using rule 34 (Sentencia)
 
 
-state 35
+state 36
 
    35 Sentencia: sentencia_salida .
 
     $default  reduce using rule 35 (Sentencia)
 
 
-state 36
-
-   17 lista_identificadores: IDENTIFICADOR .
-
-    $default  reduce using rule 17 (lista_identificadores)
-
-
 state 37
-
-   16 lista_identificadores: lista_identificadores . COMA IDENTIFICADOR
-   18                      | lista_identificadores . IDENTIFICADOR error
-   23 Cuerpo_declar_variables: error lista_identificadores . PYC
-
-    IDENTIFICADOR  shift, and go to state 63
-    COMA           shift, and go to state 64
-    PYC            shift, and go to state 65
-
-
-state 38
 
    26 tipo: TIPO_LISTA TIPO_PRIM .
 
     $default  reduce using rule 26 (tipo)
 
 
+state 38
+
+   18 lista_identificadores: lista_identificadores IDENTIFICADOR . error
+
+    error  shift, and go to state 65
+
+
 state 39
+
+   16 lista_identificadores: lista_identificadores COMA . IDENTIFICADOR
+
+    IDENTIFICADOR  shift, and go to state 66
+
+
+state 40
+
+   23 Cuerpo_declar_variables: lista_identificadores PYC . error
+
+    error  shift, and go to state 67
+
+
+state 41
 
    16 lista_identificadores: lista_identificadores . COMA IDENTIFICADOR
    18                      | lista_identificadores . IDENTIFICADOR error
    22 Cuerpo_declar_variables: tipo lista_identificadores . PYC
    24                        | tipo lista_identificadores . error
 
-    error          shift, and go to state 66
-    IDENTIFICADOR  shift, and go to state 63
-    COMA           shift, and go to state 64
-    PYC            shift, and go to state 67
-
-
-state 40
-
-    8 Cabecera_subprograma: SUBPROG_CLAVE IDENTIFICADOR . PARIZQ lista_argumentos PARDER
-
-    PARIZQ  shift, and go to state 68
-
-
-state 41
-
-   40 sentencia_if: NOMB_IF PARIZQ . expresion PARDER NOMB_THEN
-   41 Sentencia: NOMB_IF PARIZQ . expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia
-
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
-
-    expresion        go to state 69
-    constante_lista  go to state 55
+    error          shift, and go to state 68
+    IDENTIFICADOR  shift, and go to state 38
+    COMA           shift, and go to state 39
+    PYC            shift, and go to state 69
 
 
 state 42
 
-   42 sentencia_while: NOMB_WHILE PARIZQ . expresion PARDER Sentencia
+    8 Cabecera_subprograma: SUBPROG_CLAVE IDENTIFICADOR . PARIZQ lista_argumentos PARDER
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
-
-    expresion        go to state 70
-    constante_lista  go to state 55
+    PARIZQ  shift, and go to state 70
 
 
 state 43
 
-   43 sentencia_for: NOMB_FOR PARIZQ . sentencia_asignacion expresion PYC Sentencia PARDER Sentencia
+   40 sentencia_if: NOMB_IF PARIZQ . expresion PARDER NOMB_THEN
+   41 Sentencia: NOMB_IF PARIZQ . expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia
 
-    IDENTIFICADOR  shift, and go to state 71
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
-    sentencia_asignacion  go to state 72
+    expresion        go to state 71
+    constante_lista  go to state 57
 
 
 state 44
+
+   42 sentencia_while: NOMB_WHILE PARIZQ . expresion PARDER Sentencia
+
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
+
+    expresion        go to state 72
+    constante_lista  go to state 57
+
+
+state 45
+
+   43 sentencia_for: NOMB_FOR PARIZQ . sentencia_asignacion expresion PYC Sentencia PARDER Sentencia
+
+    IDENTIFICADOR  shift, and go to state 73
+
+    sentencia_asignacion  go to state 74
+
+
+state 46
 
    16 lista_identificadores: lista_identificadores . COMA IDENTIFICADOR
    18                      | lista_identificadores . IDENTIFICADOR error
    44 sentencia_entrada: NOMB_ENTRADA lista_identificadores . PYC
 
-    IDENTIFICADOR  shift, and go to state 63
-    COMA           shift, and go to state 64
-    PYC            shift, and go to state 73
+    IDENTIFICADOR  shift, and go to state 38
+    COMA           shift, and go to state 39
+    PYC            shift, and go to state 75
 
 
-state 45
+state 47
 
    60 expresion: error .
 
     $default  reduce using rule 60 (expresion)
 
 
-state 46
+state 48
 
    54 expresion: OP_UN_BIN . expresion
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
-    expresion        go to state 74
-    constante_lista  go to state 55
+    expresion        go to state 76
+    constante_lista  go to state 57
 
 
-state 47
+state 49
 
    52 expresion: OP_UNARIO . expresion
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
-    expresion        go to state 75
-    constante_lista  go to state 55
+    expresion        go to state 77
+    constante_lista  go to state 57
 
 
-state 48
+state 50
 
    57 expresion: IDENTIFICADOR .
 
     $default  reduce using rule 57 (expresion)
 
 
-state 49
+state 51
 
    47 lista_expresiones_o_cadena: CADENA . COMA lista_expresiones_o_cadena
    49                           | CADENA .
 
-    COMA  shift, and go to state 76
+    COMA  shift, and go to state 78
 
     $default  reduce using rule 49 (lista_expresiones_o_cadena)
 
 
-state 50
+state 52
 
    58 expresion: CONSTANTE .
 
     $default  reduce using rule 58 (expresion)
 
 
-state 51
+state 53
 
    51 expresion: PARIZQ . expresion PARDER
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
-    expresion        go to state 77
-    constante_lista  go to state 55
+    expresion        go to state 79
+    constante_lista  go to state 57
 
 
-state 52
+state 54
 
    61 constante_lista: CORIZQ . lista_expresiones CORDER
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
     CORDER  reduce using rule 21 (lista_expresiones)
     COMA    reduce using rule 21 (lista_expresiones)
 
-    lista_expresiones  go to state 78
-    expresion          go to state 79
-    constante_lista    go to state 55
+    lista_expresiones  go to state 80
+    expresion          go to state 81
+    constante_lista    go to state 57
 
 
-state 53
+state 55
 
    45 sentencia_salida: NOMB_SALIDA lista_expresiones_o_cadena . PYC
 
-    PYC  shift, and go to state 80
+    PYC  shift, and go to state 82
 
 
-state 54
+state 56
 
    46 lista_expresiones_o_cadena: expresion . COMA lista_expresiones_o_cadena
    48                           | expresion .
@@ -748,133 +761,133 @@ state 54
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
-    COMA             shift, and go to state 84
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
+    COMA             shift, and go to state 86
 
     $default  reduce using rule 48 (lista_expresiones_o_cadena)
 
 
-state 55
+state 57
 
    59 expresion: constante_lista .
 
     $default  reduce using rule 59 (expresion)
 
 
-state 56
+state 58
 
    37 Sentencia: IDENTIFICADOR LISTA_SENT .
 
     $default  reduce using rule 37 (Sentencia)
 
 
-state 57
+state 59
 
    38 llamada_proced: IDENTIFICADOR PARIZQ . lista_expresiones PARDER PYC
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
     PARDER  reduce using rule 21 (lista_expresiones)
     COMA    reduce using rule 21 (lista_expresiones)
 
-    lista_expresiones  go to state 85
-    expresion          go to state 79
-    constante_lista    go to state 55
+    lista_expresiones  go to state 87
+    expresion          go to state 81
+    constante_lista    go to state 57
 
 
-state 58
+state 60
 
    39 sentencia_asignacion: IDENTIFICADOR ASIGN . expresion PYC
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
-    expresion        go to state 86
-    constante_lista  go to state 55
+    expresion        go to state 88
+    constante_lista  go to state 57
 
 
-state 59
+state 61
 
     5 Declar_subprog: Cabecera_subprograma bloque .
 
     $default  reduce using rule 5 (Declar_subprog)
 
 
-state 60
+state 62
 
    10 Fin_de_bloque: LLAVDER .
 
     $default  reduce using rule 10 (Fin_de_bloque)
 
 
-state 61
+state 63
 
     2 bloque: Inicio_de_bloque Declar_de_variables_locales Declar_de_subprogs Sentencias Fin_de_bloque .
 
     $default  reduce using rule 2 (bloque)
 
 
-state 62
+state 64
 
    27 Sentencias: Sentencia Sentencias .
 
     $default  reduce using rule 27 (Sentencias)
 
 
-state 63
-
-   18 lista_identificadores: lista_identificadores IDENTIFICADOR . error
-
-    error  shift, and go to state 87
-
-
-state 64
-
-   16 lista_identificadores: lista_identificadores COMA . IDENTIFICADOR
-
-    IDENTIFICADOR  shift, and go to state 88
-
-
 state 65
 
-   23 Cuerpo_declar_variables: error lista_identificadores PYC .
+   18 lista_identificadores: lista_identificadores IDENTIFICADOR error .
+
+    $default  reduce using rule 18 (lista_identificadores)
+
+
+state 66
+
+   16 lista_identificadores: lista_identificadores COMA IDENTIFICADOR .
+
+    $default  reduce using rule 16 (lista_identificadores)
+
+
+state 67
+
+   23 Cuerpo_declar_variables: lista_identificadores PYC error .
 
     $default  reduce using rule 23 (Cuerpo_declar_variables)
 
 
-state 66
+state 68
 
    24 Cuerpo_declar_variables: tipo lista_identificadores error .
 
     $default  reduce using rule 24 (Cuerpo_declar_variables)
 
 
-state 67
+state 69
 
    22 Cuerpo_declar_variables: tipo lista_identificadores PYC .
 
     $default  reduce using rule 22 (Cuerpo_declar_variables)
 
 
-state 68
+state 70
 
     8 Cabecera_subprograma: SUBPROG_CLAVE IDENTIFICADOR PARIZQ . lista_argumentos PARDER
 
-    TIPO_PRIM   shift, and go to state 12
-    TIPO_LISTA  shift, and go to state 13
+    TIPO_PRIM   shift, and go to state 11
+    TIPO_LISTA  shift, and go to state 12
 
     $default  reduce using rule 15 (lista_argumentos)
 
@@ -882,7 +895,7 @@ state 68
     tipo              go to state 90
 
 
-state 69
+state 71
 
    40 sentencia_if: NOMB_IF PARIZQ expresion . PARDER NOMB_THEN
    41 Sentencia: NOMB_IF PARIZQ expresion . PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia
@@ -890,116 +903,116 @@ state 69
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
     PARDER           shift, and go to state 91
 
 
-state 70
+state 72
 
    42 sentencia_while: NOMB_WHILE PARIZQ expresion . PARDER Sentencia
    53 expresion: expresion . OP_BINARIO expresion
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
     PARDER           shift, and go to state 92
 
 
-state 71
+state 73
 
    39 sentencia_asignacion: IDENTIFICADOR . ASIGN expresion PYC
 
-    ASIGN  shift, and go to state 58
+    ASIGN  shift, and go to state 60
 
 
-state 72
+state 74
 
    43 sentencia_for: NOMB_FOR PARIZQ sentencia_asignacion . expresion PYC Sentencia PARDER Sentencia
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
     expresion        go to state 93
-    constante_lista  go to state 55
+    constante_lista  go to state 57
 
 
-state 73
+state 75
 
    44 sentencia_entrada: NOMB_ENTRADA lista_identificadores PYC .
 
     $default  reduce using rule 44 (sentencia_entrada)
 
 
-state 74
+state 76
 
    53 expresion: expresion . OP_BINARIO expresion
    54          | OP_UN_BIN expresion .
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
 
     $default  reduce using rule 54 (expresion)
 
 
-state 75
+state 77
 
    52 expresion: OP_UNARIO expresion .
    53          | expresion . OP_BINARIO expresion
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
 
     $default  reduce using rule 52 (expresion)
 
 
-state 76
+state 78
 
    47 lista_expresiones_o_cadena: CADENA COMA . lista_expresiones_o_cadena
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CADENA         shift, and go to state 49
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CADENA         shift, and go to state 51
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
     PYC  reduce using rule 50 (lista_expresiones_o_cadena)
 
     lista_expresiones_o_cadena  go to state 94
-    expresion                   go to state 54
-    constante_lista             go to state 55
+    expresion                   go to state 56
+    constante_lista             go to state 57
 
 
-state 77
+state 79
 
    51 expresion: PARIZQ expresion . PARDER
    53          | expresion . OP_BINARIO expresion
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
     PARDER           shift, and go to state 95
 
 
-state 78
+state 80
 
    19 lista_expresiones: lista_expresiones . COMA expresion
    61 constante_lista: CORIZQ lista_expresiones . CORDER
@@ -1008,96 +1021,96 @@ state 78
     COMA    shift, and go to state 97
 
 
-state 79
+state 81
 
    20 lista_expresiones: expresion .
    53 expresion: expresion . OP_BINARIO expresion
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
 
     $default  reduce using rule 20 (lista_expresiones)
 
 
-state 80
+state 82
 
    45 sentencia_salida: NOMB_SALIDA lista_expresiones_o_cadena PYC .
 
     $default  reduce using rule 45 (sentencia_salida)
 
 
-state 81
+state 83
 
    56 expresion: expresion OP_TERN_PRIM_UN . expresion OP_TERN_SEG expresion
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
     expresion        go to state 98
-    constante_lista  go to state 55
-
-
-state 82
-
-   55 expresion: expresion OP_UN_BIN . expresion
-
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
-
-    expresion        go to state 99
-    constante_lista  go to state 55
-
-
-state 83
-
-   53 expresion: expresion OP_BINARIO . expresion
-
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
-
-    expresion        go to state 100
-    constante_lista  go to state 55
+    constante_lista  go to state 57
 
 
 state 84
 
+   55 expresion: expresion OP_UN_BIN . expresion
+
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
+
+    expresion        go to state 99
+    constante_lista  go to state 57
+
+
+state 85
+
+   53 expresion: expresion OP_BINARIO . expresion
+
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
+
+    expresion        go to state 100
+    constante_lista  go to state 57
+
+
+state 86
+
    46 lista_expresiones_o_cadena: expresion COMA . lista_expresiones_o_cadena
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CADENA         shift, and go to state 49
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CADENA         shift, and go to state 51
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
     PYC  reduce using rule 50 (lista_expresiones_o_cadena)
 
     lista_expresiones_o_cadena  go to state 101
-    expresion                   go to state 54
-    constante_lista             go to state 55
+    expresion                   go to state 56
+    constante_lista             go to state 57
 
 
-state 85
+state 87
 
    19 lista_expresiones: lista_expresiones . COMA expresion
    38 llamada_proced: IDENTIFICADOR PARIZQ lista_expresiones . PARDER PYC
@@ -1106,31 +1119,17 @@ state 85
     COMA    shift, and go to state 97
 
 
-state 86
+state 88
 
    39 sentencia_asignacion: IDENTIFICADOR ASIGN expresion . PYC
    53 expresion: expresion . OP_BINARIO expresion
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
     PYC              shift, and go to state 103
-
-
-state 87
-
-   18 lista_identificadores: lista_identificadores IDENTIFICADOR error .
-
-    $default  reduce using rule 18 (lista_identificadores)
-
-
-state 88
-
-   16 lista_identificadores: lista_identificadores COMA IDENTIFICADOR .
-
-    $default  reduce using rule 16 (lista_identificadores)
 
 
 state 89
@@ -1161,24 +1160,24 @@ state 92
 
    42 sentencia_while: NOMB_WHILE PARIZQ expresion PARDER . Sentencia
 
-    NOMB_IF        shift, and go to state 18
-    NOMB_WHILE     shift, and go to state 19
-    NOMB_FOR       shift, and go to state 20
-    NOMB_ENTRADA   shift, and go to state 21
-    NOMB_SALIDA    shift, and go to state 22
-    IDENTIFICADOR  shift, and go to state 23
+    NOMB_IF        shift, and go to state 19
+    NOMB_WHILE     shift, and go to state 20
+    NOMB_FOR       shift, and go to state 21
+    NOMB_ENTRADA   shift, and go to state 22
+    NOMB_SALIDA    shift, and go to state 23
+    IDENTIFICADOR  shift, and go to state 24
     LLAVIZQ        shift, and go to state 3
 
-    bloque                go to state 24
+    bloque                go to state 25
     Inicio_de_bloque      go to state 5
     Sentencia             go to state 108
-    llamada_proced        go to state 29
-    sentencia_asignacion  go to state 30
-    sentencia_if          go to state 31
-    sentencia_while       go to state 32
-    sentencia_for         go to state 33
-    sentencia_entrada     go to state 34
-    sentencia_salida      go to state 35
+    llamada_proced        go to state 30
+    sentencia_asignacion  go to state 31
+    sentencia_if          go to state 32
+    sentencia_while       go to state 33
+    sentencia_for         go to state 34
+    sentencia_entrada     go to state 35
+    sentencia_salida      go to state 36
 
 
 state 93
@@ -1188,9 +1187,9 @@ state 93
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
     PYC              shift, and go to state 109
 
 
@@ -1219,16 +1218,16 @@ state 97
 
    19 lista_expresiones: lista_expresiones COMA . expresion
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
     expresion        go to state 110
-    constante_lista  go to state 55
+    constante_lista  go to state 57
 
 
 state 98
@@ -1238,10 +1237,10 @@ state 98
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
    56          | expresion OP_TERN_PRIM_UN expresion . OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
+    OP_TERN_PRIM_UN  shift, and go to state 83
     OP_TERN_SEG      shift, and go to state 111
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
 
 
 state 99
@@ -1251,8 +1250,8 @@ state 99
    55          | expresion OP_UN_BIN expresion .
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
 
     $default  reduce using rule 55 (expresion)
 
@@ -1264,8 +1263,8 @@ state 100
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
 
     $default  reduce using rule 53 (expresion)
 
@@ -1302,8 +1301,8 @@ state 105
 
    13 lista_argumentos: lista_argumentos COMA . tipo IDENTIFICADOR
 
-    TIPO_PRIM   shift, and go to state 12
-    TIPO_LISTA  shift, and go to state 13
+    TIPO_PRIM   shift, and go to state 11
+    TIPO_LISTA  shift, and go to state 12
 
     tipo  go to state 113
 
@@ -1320,25 +1319,25 @@ state 107
    40 sentencia_if: NOMB_IF PARIZQ expresion PARDER NOMB_THEN .
    41 Sentencia: NOMB_IF PARIZQ expresion PARDER NOMB_THEN . Sentencia NOMB_ELSE Sentencia
 
-    NOMB_IF        shift, and go to state 18
-    NOMB_ENTRADA   shift, and go to state 21
-    NOMB_SALIDA    shift, and go to state 22
-    IDENTIFICADOR  shift, and go to state 23
+    NOMB_IF        shift, and go to state 19
+    NOMB_ENTRADA   shift, and go to state 22
+    NOMB_SALIDA    shift, and go to state 23
+    IDENTIFICADOR  shift, and go to state 24
     LLAVIZQ        shift, and go to state 3
 
     LLAVIZQ   [reduce using rule 40 (sentencia_if)]
     $default  reduce using rule 40 (sentencia_if)
 
-    bloque                go to state 24
+    bloque                go to state 25
     Inicio_de_bloque      go to state 5
     Sentencia             go to state 114
-    llamada_proced        go to state 29
-    sentencia_asignacion  go to state 30
-    sentencia_if          go to state 31
-    sentencia_while       go to state 32
-    sentencia_for         go to state 33
-    sentencia_entrada     go to state 34
-    sentencia_salida      go to state 35
+    llamada_proced        go to state 30
+    sentencia_asignacion  go to state 31
+    sentencia_if          go to state 32
+    sentencia_while       go to state 33
+    sentencia_for         go to state 34
+    sentencia_entrada     go to state 35
+    sentencia_salida      go to state 36
 
 
 state 108
@@ -1352,24 +1351,24 @@ state 109
 
    43 sentencia_for: NOMB_FOR PARIZQ sentencia_asignacion expresion PYC . Sentencia PARDER Sentencia
 
-    NOMB_IF        shift, and go to state 18
-    NOMB_WHILE     shift, and go to state 19
-    NOMB_FOR       shift, and go to state 20
-    NOMB_ENTRADA   shift, and go to state 21
-    NOMB_SALIDA    shift, and go to state 22
-    IDENTIFICADOR  shift, and go to state 23
+    NOMB_IF        shift, and go to state 19
+    NOMB_WHILE     shift, and go to state 20
+    NOMB_FOR       shift, and go to state 21
+    NOMB_ENTRADA   shift, and go to state 22
+    NOMB_SALIDA    shift, and go to state 23
+    IDENTIFICADOR  shift, and go to state 24
     LLAVIZQ        shift, and go to state 3
 
-    bloque                go to state 24
+    bloque                go to state 25
     Inicio_de_bloque      go to state 5
     Sentencia             go to state 115
-    llamada_proced        go to state 29
-    sentencia_asignacion  go to state 30
-    sentencia_if          go to state 31
-    sentencia_while       go to state 32
-    sentencia_for         go to state 33
-    sentencia_entrada     go to state 34
-    sentencia_salida      go to state 35
+    llamada_proced        go to state 30
+    sentencia_asignacion  go to state 31
+    sentencia_if          go to state 32
+    sentencia_while       go to state 33
+    sentencia_for         go to state 34
+    sentencia_entrada     go to state 35
+    sentencia_salida      go to state 36
 
 
 state 110
@@ -1379,9 +1378,9 @@ state 110
    55          | expresion . OP_UN_BIN expresion
    56          | expresion . OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
 
-    OP_TERN_PRIM_UN  shift, and go to state 81
-    OP_UN_BIN        shift, and go to state 82
-    OP_BINARIO       shift, and go to state 83
+    OP_TERN_PRIM_UN  shift, and go to state 83
+    OP_UN_BIN        shift, and go to state 84
+    OP_BINARIO       shift, and go to state 85
 
     $default  reduce using rule 19 (lista_expresiones)
 
@@ -1390,16 +1389,16 @@ state 111
 
    56 expresion: expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG . expresion
 
-    error          shift, and go to state 45
-    OP_UN_BIN      shift, and go to state 46
-    OP_UNARIO      shift, and go to state 47
-    IDENTIFICADOR  shift, and go to state 48
-    CONSTANTE      shift, and go to state 50
-    PARIZQ         shift, and go to state 51
-    CORIZQ         shift, and go to state 52
+    error          shift, and go to state 47
+    OP_UN_BIN      shift, and go to state 48
+    OP_UNARIO      shift, and go to state 49
+    IDENTIFICADOR  shift, and go to state 50
+    CONSTANTE      shift, and go to state 52
+    PARIZQ         shift, and go to state 53
+    CORIZQ         shift, and go to state 54
 
     expresion        go to state 116
-    constante_lista  go to state 55
+    constante_lista  go to state 57
 
 
 state 112
@@ -1451,48 +1450,48 @@ state 118
 
    41 Sentencia: NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia NOMB_ELSE . Sentencia
 
-    NOMB_IF        shift, and go to state 18
-    NOMB_WHILE     shift, and go to state 19
-    NOMB_FOR       shift, and go to state 20
-    NOMB_ENTRADA   shift, and go to state 21
-    NOMB_SALIDA    shift, and go to state 22
-    IDENTIFICADOR  shift, and go to state 23
+    NOMB_IF        shift, and go to state 19
+    NOMB_WHILE     shift, and go to state 20
+    NOMB_FOR       shift, and go to state 21
+    NOMB_ENTRADA   shift, and go to state 22
+    NOMB_SALIDA    shift, and go to state 23
+    IDENTIFICADOR  shift, and go to state 24
     LLAVIZQ        shift, and go to state 3
 
-    bloque                go to state 24
+    bloque                go to state 25
     Inicio_de_bloque      go to state 5
     Sentencia             go to state 120
-    llamada_proced        go to state 29
-    sentencia_asignacion  go to state 30
-    sentencia_if          go to state 31
-    sentencia_while       go to state 32
-    sentencia_for         go to state 33
-    sentencia_entrada     go to state 34
-    sentencia_salida      go to state 35
+    llamada_proced        go to state 30
+    sentencia_asignacion  go to state 31
+    sentencia_if          go to state 32
+    sentencia_while       go to state 33
+    sentencia_for         go to state 34
+    sentencia_entrada     go to state 35
+    sentencia_salida      go to state 36
 
 
 state 119
 
    43 sentencia_for: NOMB_FOR PARIZQ sentencia_asignacion expresion PYC Sentencia PARDER . Sentencia
 
-    NOMB_IF        shift, and go to state 18
-    NOMB_WHILE     shift, and go to state 19
-    NOMB_FOR       shift, and go to state 20
-    NOMB_ENTRADA   shift, and go to state 21
-    NOMB_SALIDA    shift, and go to state 22
-    IDENTIFICADOR  shift, and go to state 23
+    NOMB_IF        shift, and go to state 19
+    NOMB_WHILE     shift, and go to state 20
+    NOMB_FOR       shift, and go to state 21
+    NOMB_ENTRADA   shift, and go to state 22
+    NOMB_SALIDA    shift, and go to state 23
+    IDENTIFICADOR  shift, and go to state 24
     LLAVIZQ        shift, and go to state 3
 
-    bloque                go to state 24
+    bloque                go to state 25
     Inicio_de_bloque      go to state 5
     Sentencia             go to state 121
-    llamada_proced        go to state 29
-    sentencia_asignacion  go to state 30
-    sentencia_if          go to state 31
-    sentencia_while       go to state 32
-    sentencia_for         go to state 33
-    sentencia_entrada     go to state 34
-    sentencia_salida      go to state 35
+    llamada_proced        go to state 30
+    sentencia_asignacion  go to state 31
+    sentencia_if          go to state 32
+    sentencia_while       go to state 33
+    sentencia_for         go to state 34
+    sentencia_entrada     go to state 35
+    sentencia_salida      go to state 36
 
 
 state 120

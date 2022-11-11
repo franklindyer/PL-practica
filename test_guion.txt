@@ -1,0 +1,91 @@
+principal {
+    def variables
+        entero ve;
+        real vf;
+        caracter vc;
+        booleano vl;
+        lista de entero pe, pe2;
+        lista de real pf, pf2;
+        lista de caracter pc, pc2;
+        lista de booleano pl;
+    enddef variables
+
+    proced procedA (entero a1, real a2, caracter a3, entero resultadoA) {
+        def variables
+            entero x1, x2;
+        enddef variables
+        
+        proced procedB (caracter b1, booleano b2, caracter resultadoB) {
+            def variables
+                real xf, x2;
+            enddef variables
+
+            proced procedC (booleano c1, entero c2, real resultadoC) {
+                def variables
+                    real x1;
+                    real r1, r2;
+                enddef variables
+
+                x1 = 1.3;
+                si (c2 > 10) entonces
+                    c2 = c2 - 1;
+                sino
+                    x1 = 3.1;
+                resultadoC = x1;
+            }
+
+            procedC(true, 10, xf);
+            procedC(false, 1, r1);
+            procedC(true, 23, r2);
+            x2 = xf * (r1 - r2) / 10.0;
+
+            mientras (x2 * r1 - xf < 10.0)
+                x2 = x2 * xf;
+        }
+
+        proced procedD (real d1, real resultadoD) {
+            def variables
+                caracter dato;
+                entero valor;
+            enddef variables
+
+            proced procedE (caracter e1, caracter e2, caracter resultadoE) {
+                cin >>> e1, e2;
+                si (e1 == 'a') entonces
+                    resultadoE = e1;
+                sino si (e2 == 'b') entonces
+                    resultadoE = e2;
+                sino
+                    resultadoE = ' ';
+            }
+
+            cin >>> valor;
+            si (d1 > 0.0) entonces {
+                def variables
+                    entero dato;
+                enddef variables
+
+                dato = 2;
+                dato = valor * 20 / dato;
+            } sino {
+                valor = valor * 100;
+                d1 = d1 / 1000.0;
+            }
+
+            resultadoD = d1;
+        }
+
+    }
+
+    pe = pe ++ 10 @ 0;
+    pf = pf ++ 10.0 @ 0;
+    pc = pc ++ '#' @ 0;
+    $pe;
+
+    si (? pe == 20) entonces
+        ve = ? pe ;
+    sino {
+        pe = pe * pe2;
+        pe = pe2 - pe <- 10 *  (20/2000);
+    }
+}

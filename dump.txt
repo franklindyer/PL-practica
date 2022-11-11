@@ -1,8 +1,336 @@
 Cabecera de programa
 Llave izquierda
+Marca de inicio de declaración de variables
+Tipo primitivo: entero
+Identificador: ve
+Punto y coma
+Tipo primitivo: real
+Identificador: vf
+Punto y coma
+Tipo primitivo: caracter
+Identificador: vc
+Punto y coma
+Tipo primitivo: booleano
+Identificador: vl
+Punto y coma
+Tipo de lista
+Tipo primitivo: entero
+Identificador: pe
+Coma
+Identificador: pe2
+Punto y coma
+Tipo de lista
+Tipo primitivo: real
+Identificador: pf
+Coma
+Identificador: pf2
+Punto y coma
+Tipo de lista
+Tipo primitivo: caracter
+Identificador: pc
+Coma
+Identificador: pc2
+Punto y coma
+Tipo de lista
+Tipo primitivo: booleano
+Identificador: pl
+Punto y coma
+Marca de fin de declaración de variables
+Clave de subprograma
+Identificador: procedA
+Parentesis izquierda
+Tipo primitivo: entero
+Identificador: a1
+Coma
+Tipo primitivo: real
+Identificador: a2
+Coma
+Tipo primitivo: caracter
+Identificador: a3
+Coma
+Tipo primitivo: entero
+Identificador: resultadoA
+Parentesis derecha
+Llave izquierda
+Marca de inicio de declaración de variables
+Tipo primitivo: entero
+Identificador: x1
+Coma
+Identificador: x2
+Punto y coma
+Marca de fin de declaración de variables
+Clave de subprograma
+Identificador: procedB
+Parentesis izquierda
+Tipo primitivo: caracter
+Identificador: b1
+Coma
+Tipo primitivo: booleano
+Identificador: b2
+Coma
+Tipo primitivo: caracter
+Identificador: resultadoB
+Parentesis derecha
+Llave izquierda
+Marca de inicio de declaración de variables
+Tipo primitivo: real
+Identificador: xf
+Coma
+Identificador: x2
+Punto y coma
+Marca de fin de declaración de variables
+Clave de subprograma
+Identificador: procedC
+Parentesis izquierda
+Tipo primitivo: booleano
+Identificador: c1
+Coma
+Tipo primitivo: entero
+Identificador: c2
+Coma
+Tipo primitivo: real
+Identificador: resultadoC
+Parentesis derecha
+Llave izquierda
+Marca de inicio de declaración de variables
+Tipo primitivo: real
+Identificador: x1
+Punto y coma
+Tipo primitivo: real
+Identificador: r1
+Coma
+Identificador: r2
+Punto y coma
+Marca de fin de declaración de variables
+Identificador: x1
+Asignación =
+Constante: 1.3
+Punto y coma
+Estructura if
+Parentesis izquierda
+Identificador: c2
+Operación binaria: >
+Constante: 10
+Parentesis derecha
+Estructura then
+Identificador: c2
+Asignación =
+Identificador: c2
+Operación que puede ser o unaria o binaria: -
+Constante: 1
+Punto y coma
+Estructura else
+Identificador: x1
+Asignación =
+Constante: 3.1
+Punto y coma
+Identificador: resultadoC
+Asignación =
+Identificador: x1
+Punto y coma
+Llave derecha
+Identificador: procedC
+Parentesis izquierda
+Identificador: true
+Coma
+Constante: 10
+Coma
+Identificador: xf
+Parentesis derecha
+Punto y coma
+Identificador: procedC
+Parentesis izquierda
+Identificador: false
+Coma
+Constante: 1
+Coma
+Identificador: r1
+Parentesis derecha
+Punto y coma
+Identificador: procedC
+Parentesis izquierda
+Identificador: true
+Coma
+Constante: 23
+Coma
+Identificador: r2
+Parentesis derecha
+Punto y coma
+Identificador: x2
+Asignación =
+Identificador: xf
+Operación binaria: *
+Parentesis izquierda
+Identificador: r1
+Operación que puede ser o unaria o binaria: -
+Identificador: r2
+Parentesis derecha
+Operación binaria: /
+Constante: 10.0
+Punto y coma
+Estructura while
+Parentesis izquierda
+Identificador: x2
+Operación binaria: *
+Identificador: r1
+Operación que puede ser o unaria o binaria: -
+Identificador: xf
+Operación binaria: <
+Constante: 10.0
+Parentesis derecha
+Identificador: x2
+Asignación =
+Identificador: x2
+Operación binaria: *
+Identificador: xf
+Punto y coma
+Llave derecha
+Clave de subprograma
+Identificador: procedD
+Parentesis izquierda
+Tipo primitivo: real
+Identificador: d1
+Coma
+Tipo primitivo: real
+Identificador: resultadoD
+Parentesis derecha
+Llave izquierda
+Marca de inicio de declaración de variables
+Tipo primitivo: caracter
+Identificador: dato
+Punto y coma
+Tipo primitivo: entero
+Identificador: valor
+Punto y coma
+Marca de fin de declaración de variables
+Clave de subprograma
+Identificador: procedE
+Parentesis izquierda
+Tipo primitivo: caracter
+Identificador: e1
+Coma
+Tipo primitivo: caracter
+Identificador: e2
+Coma
+Tipo primitivo: caracter
+Identificador: resultadoE
+Parentesis derecha
+Llave izquierda
+Aceptar entrada
+Identificador: e1
+Coma
+Identificador: e2
+Punto y coma
+Estructura if
+Parentesis izquierda
+Identificador: e1
+Operación binaria: ==
+Constante: 'a'
+Parentesis derecha
+Estructura then
+Identificador: resultadoE
+Asignación =
+Identificador: e1
+Punto y coma
+Estructura else
+Estructura if
+Parentesis izquierda
+Identificador: e2
+Operación binaria: ==
+Constante: 'b'
+Parentesis derecha
+Estructura then
+Identificador: resultadoE
+Asignación =
+Identificador: e2
+Punto y coma
+Estructura else
+Identificador: resultadoE
+Asignación =
 
-(Linea 2) Error léxico: token �
+(Linea 59) Error léxico: token '
 
-(Linea 2) Error léxico: token �
-Identificador: ef
-Identificador: variables
+(Linea 59) Error léxico: token '
+Punto y coma
+Error en expresión aritmeto-lógica.
+Llave derecha
+Aceptar entrada
+Identificador: valor
+Punto y coma
+Estructura if
+Parentesis izquierda
+Identificador: d1
+Operación binaria: >
+Constante: 0.0
+Parentesis derecha
+Estructura then
+Llave izquierda
+Marca de inicio de declaración de variables
+Tipo primitivo: entero
+Identificador: dato
+Punto y coma
+Marca de fin de declaración de variables
+Identificador: dato
+Asignación =
+Constante: 2
+Punto y coma
+Identificador: dato
+Asignación =
+Identificador: valor
+Operación binaria: *
+Constante: 20
+Operación binaria: /
+Identificador: dato
+Punto y coma
+Llave derecha
+Estructura else
+Llave izquierda
+Identificador: valor
+Asignación =
+Identificador: valor
+Operación binaria: *
+Constante: 100
+Punto y coma
+Identificador: d1
+Asignación =
+Identificador: d1
+Operación binaria: /
+Constante: 1000.0
+Punto y coma
+Llave derecha
+Identificador: resultadoD
+Asignación =
+Identificador: d1
+Punto y coma
+Llave derecha
+Llave derecha
+Identificador: pe
+Asignación =
+Identificador: pe
+Primera parte de operación ternaria o bien una operación unaria: ++
+Constante: 10
+Segunda parte de operación ternaria: @
+Constante: 0
+Punto y coma
+Identificador: pf
+Asignación =
+Identificador: pf
+Primera parte de operación ternaria o bien una operación unaria: ++
+Constante: 10.0
+Segunda parte de operación ternaria: @
+Constante: 0
+Punto y coma
+Identificador: pc
+Asignación =
+Identificador: pc
+Primera parte de operación ternaria o bien una operación unaria: ++
+
+(Linea 82) Error léxico: token '
+Operación unaria: #
+
+(Linea 82) Error léxico: token '
+Segunda parte de operación ternaria: @
+Error en expresión aritmeto-lógica.
+Constante: 0
+Punto y coma
+Operación de listas: $
