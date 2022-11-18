@@ -1,8 +1,8 @@
 principal {
     def variables
-        entero ve;
-        real vf;
-        caracter vc;
+        entero ve b,j,g,n
+        real vf,d,gg mm;
+        car~~~~acter vc;
         booleano vl;
         lista de entero pe, pe2;
         lista de real pf, pf2;
@@ -13,7 +13,7 @@ principal {
         real y1, y2, y3;
     enddef variables
 
-    proced procedA (entero a1, real a2, caracter a3, entero resultadoA) {
+    proced procedA (entero a1 real a2, caracter a3, entero resultadoA) {
         def variables
             entero x1, x2;
         enddef variables
@@ -30,8 +30,8 @@ principal {
                 enddef variables
 
                 x1 = 1.3;
-                si (c2 < 10) entonces
-                    c2 = c2 - 1;
+                si (c2 < 10+) entonces
+                    c2 = c2 - 1);
                 sino
                     x1 = 3.1;
                 resultadoC = x1;

@@ -21,7 +21,13 @@ LISTA_UNARIO_POSTFIJO (">>"|"<<")
 LISTA_UNARIO_PREFIJO "$"
 OP_TERN_PRIM_UN "++"
 OP_TERN_SEG "@"
-OP_BINARIO ("%"|"*"|"/"|"=="|"<"|">"|"<="|">="|"!="|"&&"|"||"|"^"|"**")
+OP_BINARIO_MULT ("%"|"*"|"/")
+OP_BINARIO_IG ("=="|"!=")
+OP_BINARIO_COMP ("<"|">"|"<="|">=")
+OP_BINARIO_AND_LOG "&&"
+OP_BINARIO_OR_LOG "||"
+OP_BINARIO_XOR "^"
+OP_BINARIO_ASTAST "**"
 OP_UNARIO ("!"|"#"|"?"|"--")
 OP_UN_BIN ("+"|"-")
 CADENA \"[^\"]*\"
@@ -153,67 +159,67 @@ OTROS .
 
 "%" {
     if (DEBUG) printf("Operación binaria: %s\n", "%");
-    return OP_BINARIO;
+    return OP_BINARIO_MULT;
 }
 
 "*" {
     if (DEBUG) printf("Operación binaria: *\n");
-    return OP_BINARIO;
+    return OP_BINARIO_MULT;
 }
 
 "/" {
     if (DEBUG) printf("Operación binaria: /\n");
-    return OP_BINARIO;
+    return OP_BINARIO_MULT;
 }
 
 "==" {
     if (DEBUG) printf("Operación binaria: ==\n");
-    return OP_BINARIO;
+    return OP_BINARIO_IG;
 }
 
 "<" {
     if (DEBUG) printf("Operación binaria: <\n");
-    return OP_BINARIO;
+    return OP_BINARIO_COMP;
 }
 
 ">" {
     if (DEBUG) printf("Operación binaria: >\n");
-    return OP_BINARIO;
+    return OP_BINARIO_COMP;
 }
 
 "<=" {
     if (DEBUG) printf("Operación binaria: <=\n");
-    return OP_BINARIO;
+    return OP_BINARIO_COMP;
 }
 
 ">=" {
     if (DEBUG) printf("Operación binaria: >=\n");
-    return OP_BINARIO;
+    return OP_BINARIO_COMP;
 }
 
 "!=" {
     if (DEBUG) printf("Operación binaria: !=\n");
-    return OP_BINARIO;
+    return OP_BINARIO_IG;
 }
 
 "&&" {
     if (DEBUG) printf("Operación binaria: &&\n");
-    return OP_BINARIO;
+    return OP_BINARIO_AND_LOG;
 }
 
 "||" {
     if (DEBUG) printf("Operación binaria: ||\n");
-    return OP_BINARIO;
+    return OP_BINARIO_OR_LOG;
 }
 
 "^" {
     if (DEBUG) printf("Operación binaria: ^\n");
-    return OP_BINARIO;
+    return OP_BINARIO_XOR;
 }
 
 "**" {
     if (DEBUG) printf("Operación binaria: **\n");
-    return OP_BINARIO;
+    return OP_BINARIO_ASTAST;
 }
 
 "!" {

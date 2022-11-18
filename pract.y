@@ -31,10 +31,16 @@ int main()
 %token TIPO_PRIM TIPO_LISTA
 %token NOMB_IF NOMB_THEN NOMB_ELSE NOMB_WHILE NOMB_FOR NOMB_ENTRADA NOMB_SALIDA
 %token LISTA_UNARIO_PREFIJO LISTA_UNARIO_POSTFIJO
-%token OP_TERN_PRIM_UN OP_TERN_SEG
+%token OP_TERN_PRIM_UN 
+%token OP_TERN_SEG
 %token OP_UN_BIN
 %token OP_UNARIO
-%token OP_BINARIO
+%token OP_BINARIO_OR_LOG 
+%token OP_BINARIO_AND_LOG 
+%token OP_BINARIO_XOR 
+%token OP_BINARIO_IG 
+%token OP_BINARIO_COMP 
+%token OP_BINARIO_MULT
 %token IDENTIFICADOR CADENA CONSTANTE PARIZQ PARDER CORIZQ CORDER LLAVIZQ LLAVDER
 %token COMA PYC
 %token ASIGN
@@ -44,13 +50,18 @@ int main()
 
 %left NOMB_WHILE NOMB_FOR
 
+%left OP_BINARIO_OR_LOG
+%left OP_BINARIO_AND_LOG
+%left OP_BINARIO_XOR
+%left OP_BINARIO_IG
+%left OP_BINARIO_COMP
+%left OP_BINARIO_ASTAST
+%left OP_UN_BIN
+%left OP_BINARIO_MULT
 %right OP_UNARIO
-%left OP_BINARIO
-%right OP_UN_BIN
-%left OP_TERN_PRIM_UN OP_TERN_SEG
+%left OP_TERN_PRIM_UN 
+%left OP_TERN_SEG
 
-%left NOMB_ENTRADA NOMB_SALIDA
-%left IDENTIFICADOR
 
 %%
 
@@ -91,7 +102,7 @@ lista_argumentos : lista_argumentos COMA tipo IDENTIFICADOR
 
 lista_identificadores : lista_identificadores COMA IDENTIFICADOR
                       | IDENTIFICADOR
-                      | lista_identificadores IDENTIFICADOR error
+                      | lista_identificadores IDENTIFICADOR error { yyerrok; }
 ;
 
 lista_expresiones : lista_expresiones COMA expresion
@@ -100,7 +111,7 @@ lista_expresiones : lista_expresiones COMA expresion
 ;
 
 Cuerpo_declar_variables : tipo lista_identificadores PYC
-                        | tipo lista_identificadores error
+                        | tipo lista_identificadores error { yyerrok; }
 ;
 
 tipo : TIPO_PRIM
@@ -157,8 +168,14 @@ lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena
 
 expresion : PARIZQ expresion PARDER
           | OP_UNARIO expresion
-          | expresion OP_BINARIO expresion
-          | OP_UN_BIN expresion
+          | expresion OP_BINARIO_MULT expresion
+          | expresion OP_BINARIO_IG expresion
+          | expresion OP_BINARIO_COMP expresion
+          | expresion OP_BINARIO_AND_LOG expresion
+          | expresion OP_BINARIO_OR_LOG expresion
+          | expresion OP_BINARIO_XOR expresion
+          | expresion OP_BINARIO_ASTAST expresion
+          | OP_UN_BIN expresion %prec OP_UNARIO
           | expresion OP_UN_BIN expresion
           | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
           | IDENTIFICADOR
