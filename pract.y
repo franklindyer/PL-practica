@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#define YYERROR_VERBOSE
 
 int yylineno;
 
@@ -18,7 +19,7 @@ int yywrap()
     return 1;
 }
 
-main()
+int main()
 {
     yyparse();
 }
@@ -29,7 +30,7 @@ main()
 %token SUBPROG_CLAVE CABECERA_PROGRAMA
 %token TIPO_PRIM TIPO_LISTA
 %token NOMB_IF NOMB_THEN NOMB_ELSE NOMB_WHILE NOMB_FOR NOMB_ENTRADA NOMB_SALIDA
-%token LISTA_SENT
+%token LISTA_UNARIO_PREFIJO LISTA_UNARIO_POSTFIJO
 %token OP_TERN_PRIM_UN OP_TERN_SEG
 %token OP_UN_BIN
 %token OP_UNARIO
@@ -42,7 +43,6 @@ main()
 %start Programa
 
 %left NOMB_WHILE NOMB_FOR
-%right NOMB_IF NOMB_THEN NOMB_ELSE
 
 %right OP_UNARIO
 %left OP_BINARIO
@@ -86,12 +86,12 @@ Variables_locales : Variables_locales Cuerpo_declar_variables
 lista_argumentos : lista_argumentos COMA tipo IDENTIFICADOR
                  | tipo IDENTIFICADOR
                  |
+                 | error
 ;
 
 lista_identificadores : lista_identificadores COMA IDENTIFICADOR
                       | IDENTIFICADOR
                       | lista_identificadores IDENTIFICADOR error
-                        { printf("Hace falta un coma en la lista de identificadores en la linea %d\n", yylineno); yyerrok; }
 ;
 
 lista_expresiones : lista_expresiones COMA expresion
@@ -100,10 +100,7 @@ lista_expresiones : lista_expresiones COMA expresion
 ;
 
 Cuerpo_declar_variables : tipo lista_identificadores PYC
-                        | lista_identificadores PYC error
-                            { printf("Hace falta el tipo de los variables en la linea %d\n", yylineno); yyerrok; }
                         | tipo lista_identificadores error
-                            { printf("Hace falta punto y coma en la declaracion de variables en la linea %d\n", yylineno); yyerrok; }
 ;
 
 tipo : TIPO_PRIM
@@ -122,7 +119,11 @@ Sentencia : bloque
           | sentencia_entrada
           | sentencia_salida
           | llamada_proced
-          | IDENTIFICADOR LISTA_SENT
+          | lista_sent
+;
+
+lista_sent : IDENTIFICADOR LISTA_UNARIO_POSTFIJO PYC
+           | LISTA_UNARIO_PREFIJO IDENTIFICADOR PYC
 ;
 
 llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC
@@ -132,7 +133,7 @@ sentencia_asignacion : IDENTIFICADOR ASIGN expresion PYC
 ;
 
 sentencia_if : NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia
-             : NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia
+             | NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia
 ;
 
 sentencia_while : NOMB_WHILE PARIZQ expresion PARDER Sentencia
@@ -163,7 +164,7 @@ expresion : PARIZQ expresion PARDER
           | IDENTIFICADOR
           | CONSTANTE
           | constante_lista
-          | error { printf("Error en expresión aritmeto-lógica.\n"); }
+          | error
 ;
 
 constante_lista : CORIZQ lista_expresiones CORDER

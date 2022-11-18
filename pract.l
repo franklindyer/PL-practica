@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 #include "y.tab.h"
-#define DEBUG 1
+#define DEBUG 0
 %}
 
 CABECERA_PROGRAMA "principal"
@@ -17,7 +17,8 @@ NOMB_WHILE "mientras"
 NOMB_FOR "para"
 NOMB_ENTRADA "cin >>>"
 NOMB_SALIDA "cout <<<"
-LISTA_SENT (">>"|"<<"|"$")
+LISTA_UNARIO_POSTFIJO (">>"|"<<")
+LISTA_UNARIO_PREFIJO "$"
 OP_TERN_PRIM_UN "++"
 OP_TERN_SEG "@"
 OP_BINARIO ("%"|"*"|"/"|"=="|"<"|">"|"<="|">="|"!="|"&&"|"||"|"^"|"**")
@@ -33,7 +34,7 @@ LLAVDER "}"
 COMA ","
 PYC ";"
 ASIGN "="
-CONSTANTE (([0-9])+|([0-9])+(\.([0-9])+)?|\'[a-zA-Z0-9]\'|("cierto"|"falso"))
+CONSTANTE (([0-9])+|([0-9])+(\.([0-9])+)?|\'[^\']*\'|("cierto"|"falso"))
 IDENTIFICADOR [a-zA-Z]([a-zA-Z0-9])*
 ESPACIO ("\t"|" "|"\n")
 OTROS .
@@ -127,17 +128,17 @@ OTROS .
 
 "<<" {
     if (DEBUG) printf("Operación de listas: <<\n");
-    return LISTA_SENT;
+    return LISTA_UNARIO_POSTFIJO;
 }
 
 ">>" {
     if (DEBUG) printf("Operación de listas: >>\n");
-    return LISTA_SENT;
+    return LISTA_UNARIO_POSTFIJO;
 }
 
 "$" {
     if (DEBUG) printf("Operación de listas: $\n");
-    return LISTA_SENT;
+    return LISTA_UNARIO_PREFIJO;
 }
 
 "++" {
