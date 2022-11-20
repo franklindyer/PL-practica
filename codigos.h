@@ -1,0 +1,28 @@
+#define COD_TIPO_ENTERO 1
+#define COD_TIPO_REAL 2
+#define COD_TIPO_BOOLEANO 3
+#define COD_TIPO_CARACTER 4
+#define COD_TIPO_CADENA 5
+#define COD_TIPO_LISTA 6
+
+#define OPBIN_MULT_MOD 1
+#define OPBIN_MULT_POR 2
+#define OPBIN_MULT_PART 3
+
+#define OPBIN_IGUAL 1
+#define OPBIN_DESIGUAL 2
+
+#define OPBIN_COMP_MENOR 1
+#define OPBIN_COMP_MAYOR 2
+#define OPBIN_COMP_MENORIG 3
+#define OPBIN_COMP_MAYORIG 4
+
+#define OPUN_NO 1
+#define OPUN_HASH 2
+#define OPUN_INTER 3
+
+#define OPUNBIN_MAS 1
+#define OPUNBIN_MENOS 2
+
+#define OPLISTA_IZQ 1
+#define OPLISTA_DER 2

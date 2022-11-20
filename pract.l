@@ -1,7 +1,11 @@
 %{
 #include <stdio.h>
+#include "codigos.h"
+#include "tabla_structs.c"
 #include "y.tab.h"
 #define DEBUG 0
+
+#define YYSTYPE atributos
 %}
 
 CABECERA_PROGRAMA "principal"
@@ -28,7 +32,8 @@ OP_BINARIO_AND_LOG "&&"
 OP_BINARIO_OR_LOG "||"
 OP_BINARIO_XOR "^"
 OP_BINARIO_ASTAST "**"
-OP_UNARIO ("!"|"#"|"?"|"--")
+OP_BINARIO_MENMEN "--"
+OP_UNARIO ("!"|"#"|"?")
 OP_UN_BIN ("+"|"-")
 CADENA \"[^\"]*\"
 PARIZQ "("
@@ -41,6 +46,10 @@ COMA ","
 PYC ";"
 ASIGN "="
 CONSTANTE (([0-9])+|([0-9])+(\.([0-9])+)?|\'[^\']*\'|("cierto"|"falso"))
+CONSTANTE_ENTERO ([0-9])+
+CONSTANTE_REAL ([0-9])+(\.([0-9])+)?
+CONSTANTE_BOOLEANO ("cierto"|"falso")
+CONSTANTE_CARACTER \'[^\']\'
 IDENTIFICADOR [a-zA-Z]([a-zA-Z0-9])*
 ESPACIO ("\t"|" "|"\n")
 OTROS .
@@ -68,32 +77,38 @@ OTROS .
 }
 
 "entero" {
-    if (DEBUG) printf("Tipo primitivo: entero\n");
+    if (DEBUG) printf("Tipo primitivo: entero\n"); 
+    yylval.tipo = entero;
     return TIPO_PRIM;
 }
 
 "real" {
     if (DEBUG) printf("Tipo primitivo: real\n");
+    yylval.tipo = real;
     return TIPO_PRIM;
 }
 
 "caracter" {
     if (DEBUG) printf("Tipo primitivo: caracter\n");
+    yylval.tipo = caracter;
     return TIPO_PRIM;
 }
 
 "booleano" {
     if (DEBUG) printf("Tipo primitivo: booleano\n");
+    yylval.tipo = booleano;
     return TIPO_PRIM;
 }
 
 "cadena" {
     if (DEBUG) printf("Tipo primitivo: cadena\n");
+    yylval.tipo = booleano;
     return TIPO_PRIM;
 }
 
 "lista de" {
     if (DEBUG) printf("Tipo de lista\n");
+    yylval.esLista = 1;
     return TIPO_LISTA;
 }
 
@@ -134,11 +149,13 @@ OTROS .
 
 "<<" {
     if (DEBUG) printf("Operación de listas: <<\n");
+    yylval.atrib = OPLISTA_IZQ;
     return LISTA_UNARIO_POSTFIJO;
 }
 
 ">>" {
     if (DEBUG) printf("Operación de listas: >>\n");
+    yylval.atrib = OPLISTA_DER;
     return LISTA_UNARIO_POSTFIJO;
 }
 
@@ -159,46 +176,55 @@ OTROS .
 
 "%" {
     if (DEBUG) printf("Operación binaria: %s\n", "%");
+    yylval.atrib = OPBIN_MULT_MOD;
     return OP_BINARIO_MULT;
 }
 
 "*" {
     if (DEBUG) printf("Operación binaria: *\n");
+    yylval.atrib = OPBIN_MULT_POR;
     return OP_BINARIO_MULT;
 }
 
 "/" {
     if (DEBUG) printf("Operación binaria: /\n");
+    yylval.atrib = OPBIN_MULT_PART;
     return OP_BINARIO_MULT;
 }
 
 "==" {
     if (DEBUG) printf("Operación binaria: ==\n");
+    yylval.atrib = OPBIN_IGUAL;
     return OP_BINARIO_IG;
 }
 
 "<" {
     if (DEBUG) printf("Operación binaria: <\n");
+    yylval.atrib = OPBIN_COMP_MENOR;
     return OP_BINARIO_COMP;
 }
 
 ">" {
     if (DEBUG) printf("Operación binaria: >\n");
+    yylval.atrib = OPBIN_COMP_MAYOR;
     return OP_BINARIO_COMP;
 }
 
 "<=" {
     if (DEBUG) printf("Operación binaria: <=\n");
+    yylval.atrib = OPBIN_COMP_MENORIG;
     return OP_BINARIO_COMP;
 }
 
 ">=" {
     if (DEBUG) printf("Operación binaria: >=\n");
+    yylval.atrib = OPBIN_COMP_MAYORIG;
     return OP_BINARIO_COMP;
 }
 
 "!=" {
     if (DEBUG) printf("Operación binaria: !=\n");
+    yylval.atrib = OPBIN_DESIGUAL;
     return OP_BINARIO_IG;
 }
 
@@ -224,50 +250,84 @@ OTROS .
 
 "!" {
     if (DEBUG) printf("Operación unaria: !\n");
+    yylval.atrib = OPUN_NO;
     return OP_UNARIO;
 }
 
 "#" {
     if (DEBUG) printf("Operación unaria: #\n");
+    yylval.atrib = OPUN_HASH;
     return OP_UNARIO;
 }
 
 "?" {
     if (DEBUG) printf("Operación unaria: ?\n");
+    yylval.atrib = OPUN_INTER;
     return OP_UNARIO;
 }
 
 "--" {
     if (DEBUG) printf("Operación unaria: --\n");
-    return OP_UNARIO;
+    return OP_BINARIO_MENMEN;
 }
 
 
 
 "+" {
     if (DEBUG) printf("Operación que puede ser o unaria o binaria: +\n");
+    yylval.atrib = OPUNBIN_MAS;
     return OP_UN_BIN;
 }
 
 "-" {
     if (DEBUG) printf("Operación que puede ser o unaria o binaria: -\n");
+    yylval.atrib = OPUNBIN_MENOS;
     return OP_UN_BIN;
+}
+
+
+{CADENA} {
+    if (DEBUG) printf("Cadena: %s\n", yytext);
+    yylval.tipo = cadena;
+    yylval.atrib = COD_TIPO_CADENA;
+    return CADENA;
+}
+
+{CONSTANTE_ENTERO} {
+    if (DEBUG) printf("Constante entero: %s\n", yytext);
+    yylval.tipo = entero;
+    yylval.atrib = COD_TIPO_ENTERO;
+    return CONSTANTE;
+}
+
+{CONSTANTE_REAL} {
+    if (DEBUG) printf("Constante real: %s\n", yytext);
+    yylval.tipo = real;
+    yylval.atrib = COD_TIPO_REAL;
+    return CONSTANTE;
+}
+
+{CONSTANTE_BOOLEANO} {
+    if (DEBUG) printf("Constante booleano: %s\n", yytext);
+    yylval.tipo = booleano;
+    yylval.atrib = COD_TIPO_BOOLEANO;
+    return CONSTANTE;
+}
+
+{CONSTANTE_CARACTER} {
+    if (DEBUG) printf("Constante caracter: %s\n", yytext);
+    yylval.tipo = caracter;
+    yylval.atrib = COD_TIPO_CARACTER;
+    return CONSTANTE;
 }
 
 {IDENTIFICADOR} {
     if (DEBUG) printf("Identificador: %s\n", yytext);
+    yylval.lexema = strdup(yytext);
     return IDENTIFICADOR;
 }
 
-{CADENA} {
-    if (DEBUG) printf("Cadena: %s\n", yytext);
-    return CADENA;
-}
 
-{CONSTANTE} {
-    if (DEBUG) printf("Constante: %s\n", yytext);
-    return CONSTANTE;
-}
 
 "(" {
     if (DEBUG) printf("Parentesis izquierda\n");

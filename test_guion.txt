@@ -1,7 +1,8 @@
 principal {
     def variables
-        entero ve b,j,g,n
-        real vf,d,gg mm;
+        entero ve,b,j,g,n;
+        real vf,d,gg,mm;
+        entero vf;
         car~~~~acter vc;
         booleano vl;
         lista de entero pe, pe2;
@@ -13,9 +14,10 @@ principal {
         real y1, y2, y3;
     enddef variables
 
-    proced procedA (entero a1 real a2, caracter a3, entero resultadoA) {
+    proced procedA (entero a1, real a2, caracter a3, entero resultadoA) {
         def variables
             entero x1, x2;
+            entero a1;
         enddef variables
         
         proced procedB (caracter b1, booleano b2, caracter resultadoB) {
@@ -37,10 +39,10 @@ principal {
                 resultadoC = x1;
             }
 
-            procedC(true, 10, xf);
-            procedC(false, 1, r1);
-            procedC(true, 23, r2);
-            x2 = xf * (r1 - r2) / 10.0;
+            procedC(cierto, 10, xf);
+            procedC(falso, 1, r1111);
+            procedC(falso, 23, r2);
+            x2 = xf * (ribbit - r2) / 10.0;
 
             mientras (x2 * r1 - xf < 10.0)
                 x2 = x2 * xf;
@@ -85,7 +87,7 @@ principal {
     pc = pc ++ '#' @ 0;
     $pe;
 
-    si (? pe == 20) entonces
+    si ((? pe) == 20) entonces
         ve = ? pe ;
     sino {
         pe = pe * pe2;
