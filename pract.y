@@ -93,7 +93,7 @@ Declar_subprog : Cabecera_subprograma  { Subprog = 1; }
 ;
 
 Declar_de_variables_locales : MARCA_INI_DECLAR_VARIABLES Variables_locales MARCA_FIN_DECLAR_VARIABLES {
-                                    TS_imprimir();
+                                    /* TS_imprimir(); */
                                 }
                             |
 ;
@@ -104,7 +104,9 @@ Cabecera_subprograma : SUBPROG_CLAVE
                         }
                        PARIZQ 
                        lista_argumentos 
-                       PARDER
+                       PARDER {
+                            TS_AsignarParams($2.lexema, $5.parametros);
+                        }
 ;
 
 Inicio_de_bloque : LLAVIZQ
@@ -118,10 +120,12 @@ Variables_locales : Variables_locales Cuerpo_declar_variables
 ;
 
 lista_argumentos : lista_argumentos COMA tipo IDENTIFICADOR {
+                        $$.parametros = $1.parametros + 1;
                         $4.tipo = $3.tipo;
                         TS_InsertaPARAMF($4);
                     }
                  | tipo IDENTIFICADOR {
+                        $$.parametros = 1;
                         $2.tipo = $1.tipo;
                         TS_InsertaPARAMF($2);
                     }
@@ -134,8 +138,21 @@ lista_identificadores : lista_identificadores COMA IDENTIFICADOR
                       | error
 ;
 
-lista_expresiones : lista_expresiones COMA expresion
-                  | expresion
+lista_expresiones : lista_expresiones COMA expresion {
+                            $$.parametros = $1.parametros + 1;
+                            $3.parametros = $1.parametros + 1;
+                            $3.lexema = $1.lexema;
+                            if (TS_ComprobarTipoParamf($3.lexema, $3.parametros, $3.tipo) == 0)
+                                printf("(Línea %d) Error semántico: argumento %d a procedimiento %s tiene tipo incorrecto\n", yylineno, $3.parametros, $3.lexema);
+                        }
+                  | expresion {
+                            $$.parametros = 1;
+                            $1.parametros = 1;
+                            $1.lexema = $$.lexema;
+                            if (TS_ComprobarTipoParamf($1.lexema, $1.parametros, $1.tipo) == 0)
+                                printf("(Línea %d) Error semántico: argumento %d a procedimiento %s tiene tipo incorrecto\n", yylineno, $1.parametros, $1.lexema);
+                            
+                        }
                   | 
 ;
 
@@ -191,20 +208,42 @@ lista_sent : IDENTIFICADOR LISTA_UNARIO_POSTFIJO PYC
            | LISTA_UNARIO_PREFIJO IDENTIFICADOR PYC
 ;
 
-llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC
+llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC {
+                        int n = TS_RecogerProced($1.lexema);
+                        if (n == -1)
+                            printf("(Línea %d) Error semántico: llamada a procedimiento que no existe\n", yylineno);
+                        else {
+                            unsigned int params = TS[n].parametros;
+                            if (params != $3.parametros)
+                                printf("(Línea %d) Error semántico: procedimiento espera %d argumentos\n", yylineno, params);
+                        }
+                        $3.lexema = $1.lexema;
+                    }
 ;
 
 sentencia_asignacion : IDENTIFICADOR ASIGN expresion PYC
 ;
 
-sentencia_if : NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia
-             | NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia
+sentencia_if : NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia {
+                    if ($3.tipo != booleano)
+                            printf("(Línea %d) Error semántico: intento de usar condición no booleano en condicional\n", yylineno);
+                }
+             | NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia {
+                    if ($3.tipo != booleano)
+                            printf("(Línea %d) Error semántico: intento de usar condición no booleano en condicional\n", yylineno);
+                }
 ;
 
-sentencia_while : NOMB_WHILE PARIZQ expresion PARDER Sentencia
+sentencia_while : NOMB_WHILE PARIZQ expresion PARDER Sentencia {
+                        if ($3.tipo != booleano)
+                            printf("(Línea %d) Error semántico: intento de usar condición de fin de bucle no booleano\n", yylineno);
+                    }
 ;
 
-sentencia_for : NOMB_FOR PARIZQ sentencia_asignacion expresion PYC Sentencia PARDER Sentencia
+sentencia_for : NOMB_FOR PARIZQ sentencia_asignacion expresion PYC Sentencia PARDER Sentencia {
+                        if ($4.tipo != booleano)
+                            printf("(Línea %d) Error semántico: intento de usar condición de fin de bucle no booleano\n", yylineno);
+                    }
 ;
 
 sentencia_entrada : NOMB_ENTRADA lista_identificadores PYC
@@ -269,6 +308,8 @@ expresion : PARIZQ expresion PARDER {
                 $$.tipo = entero;
             }
           | expresion OP_BINARIO_IG expresion {
+                if ($1.tipo != $3.tipo || $1.esLista != $3.esLista)
+                    printf("(Línea %d) Error semántico: intento de comparar variables de tipos distintos\n", yylineno);
                 $$.tipo = booleano;
             }
           | expresion OP_BINARIO_COMP expresion {
@@ -299,10 +340,25 @@ expresion : PARIZQ expresion PARDER {
                 $$.tipo = lista;
             }
           | OP_UN_BIN expresion %prec OP_UNARIO {
-                
+               switch ($1.atrib) {
+                    case OPUNBIN_MAS :
+                        /* ????? */
+                        break;
+
+                    case OPUNBIN_MENOS :
+                        if ($2.tipo != real && $2.tipo != entero)
+                            printf("(Línea %d) Error semántico: intento de negar un variable no numérico\n", yylineno);
+                } 
             }
           | expresion OP_UN_BIN expresion
-          | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion
+          | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion {
+                if ($1.esLista == 0)
+                    printf("(Línea %d) Error semántico: intento de realizar operación de listas con algo que no sea lista\n", yylineno);
+                if ($1.tipo != $3.tipo)
+                    printf("(Línea %d) Error semántico: intento de meter valor en una lista de tipo distinto\n", yylineno);
+                if ($5.tipo != entero)
+                    printf("(Línea %d) Error semántico: los índices de una lista deben ser números enteros\n", yylineno);
+            }
           | IDENTIFICADOR {
                 int indice = TS_RecogerEntrada($1.lexema);
                 if (indice == -1) {

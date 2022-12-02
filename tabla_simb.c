@@ -73,7 +73,7 @@ void TS_InsertaSUBPROG(atributos atrib) {
     nuevo.entrada = procedimiento;
     nuevo.nombre = strdup(atrib.lexema);
     nuevo.tipoDato = no_asignado;
-    nuevo.parametros = 0;
+    nuevo.parametros = atrib.parametros;
     nuevo.esLista = 0;
 
     TS[TOPE] = nuevo;
@@ -128,6 +128,22 @@ int TS_RecogerEntrada(char* nombre) {
     return -1;
 }
 
+int TS_RecogerProced(char* nombre) {
+    int n = TOPE - 1;
+    entradaTS entrada;
+
+    while (n != 0) {
+        entrada = TS[n];
+        if (entrada.entrada == procedimiento &&
+                strcmp(entrada.nombre, nombre) == 0) {
+            return n;
+        }
+        n += -1;
+    }
+
+    return -1;
+}
+
 void TS_imprimir() {
     int n = 0;
     entradaTS entrada;
@@ -138,12 +154,25 @@ void TS_imprimir() {
         if (entrada.entrada == marca) {
             printf("%d. marca\n", n);
         } else {
-            printf("%d. %s %d %d %d\n", n, 
+            printf("%d. %s %d %d %d %d\n", n, 
                                   entrada.nombre,
                                   entrada.entrada,
                                   entrada.tipoDato,
-                                  entrada.esLista);
+                                  entrada.esLista,
+                                  entrada.parametros);
         }
         n += 1;
     }
+}
+
+int TS_AsignarParams(char* nombre, unsigned int params) {
+    int n = TS_RecogerProced(nombre);
+    if (n == -1) return -1;
+    TS[n].parametros = params;
+    return 0;
+}
+
+int TS_ComprobarTipoParamf(char* proced, int numarg, dtipo tipo) {
+    int n = TS_RecogerProced(proced);
+    return (TS[n + numarg].tipoDato == tipo);
 }

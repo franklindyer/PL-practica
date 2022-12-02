@@ -32,6 +32,7 @@ typedef struct {
 
 typedef struct {
     int atrib;
+    unsigned int parametros;
     char *lexema;
     dtipo tipo;
     char esLista;

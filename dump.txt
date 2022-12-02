@@ -1,296 +1,168 @@
-(Línea 5) Error semántico: variable local vf duplicado
-
-(Linea 6) Error léxico: token ~
-
-(Linea 6) Error léxico: token ~
-
-(Linea 6) Error léxico: token ~
-
-(Linea 6) Error léxico: token ~
+LLAMADA A PROCED EN LA ENTRADA 50
 
 0. marca
-1. ve 2 0 0
-2. b 2 0 0
-3. j 2 0 0
-4. g 2 0 0
-5. n 2 0 0
-6. vf 2 1 0
-7. d 2 1 0
-8. gg 2 1 0
-9. mm 2 1 0
-10. vl 2 3 0
-11. pe 2 0 1
-12. pe2 2 0 1
-13. pf 2 1 1
-14. pf2 2 1 1
-15. pc 2 2 1
-16. pc2 2 2 1
-17. pl 2 3 1
-18. x1 2 0 0
-19. x2 2 0 0
-20. x3 2 0 0
-21. x4 2 0 0
-22. y1 2 1 0
-23. y2 2 1 0
-24. y3 2 1 0
-(Línea 20) Error semántico: variable local a1 duplicado
-
-0. marca
-1. ve 2 0 0
-2. b 2 0 0
-3. j 2 0 0
-4. g 2 0 0
-5. n 2 0 0
-6. vf 2 1 0
-7. d 2 1 0
-8. gg 2 1 0
-9. mm 2 1 0
-10. vl 2 3 0
-11. pe 2 0 1
-12. pe2 2 0 1
-13. pf 2 1 1
-14. pf2 2 1 1
-15. pc 2 2 1
-16. pc2 2 2 1
-17. pl 2 3 1
-18. x1 2 0 0
-19. x2 2 0 0
-20. x3 2 0 0
-21. x4 2 0 0
-22. y1 2 1 0
-23. y2 2 1 0
-24. y3 2 1 0
-25. procedA 1 7 0
-26. a1 3 0 1
-27. a2 3 1 1
-28. a3 3 2 1
-29. resultadoA 3 0 1
-30. marca
-31. a1 2 0 1
-32. a2 2 1 1
-33. a3 2 2 1
-34. resultadoA 2 0 1
-35. x1 2 0 0
-36. x2 2 0 0
-
-0. marca
-1. ve 2 0 0
-2. b 2 0 0
-3. j 2 0 0
-4. g 2 0 0
-5. n 2 0 0
-6. vf 2 1 0
-7. d 2 1 0
-8. gg 2 1 0
-9. mm 2 1 0
-10. vl 2 3 0
-11. pe 2 0 1
-12. pe2 2 0 1
-13. pf 2 1 1
-14. pf2 2 1 1
-15. pc 2 2 1
-16. pc2 2 2 1
-17. pl 2 3 1
-18. x1 2 0 0
-19. x2 2 0 0
-20. x3 2 0 0
-21. x4 2 0 0
-22. y1 2 1 0
-23. y2 2 1 0
-24. y3 2 1 0
-25. procedA 1 7 0
-26. a1 3 0 1
-27. a2 3 1 1
-28. a3 3 2 1
-29. resultadoA 3 0 1
-30. marca
-31. a1 2 0 1
-32. a2 2 1 1
-33. a3 2 2 1
-34. resultadoA 2 0 1
-35. x1 2 0 0
-36. x2 2 0 0
-37. procedB 1 7 0
-38. b1 3 2 1
-39. b2 3 3 1
-40. resultadoB 3 2 1
-41. marca
-42. b1 2 2 1
-43. b2 2 3 1
-44. resultadoB 2 2 1
-45. xf 2 1 0
-46. x2 2 1 0
-
-0. marca
-1. ve 2 0 0
-2. b 2 0 0
-3. j 2 0 0
-4. g 2 0 0
-5. n 2 0 0
-6. vf 2 1 0
-7. d 2 1 0
-8. gg 2 1 0
-9. mm 2 1 0
-10. vl 2 3 0
-11. pe 2 0 1
-12. pe2 2 0 1
-13. pf 2 1 1
-14. pf2 2 1 1
-15. pc 2 2 1
-16. pc2 2 2 1
-17. pl 2 3 1
-18. x1 2 0 0
-19. x2 2 0 0
-20. x3 2 0 0
-21. x4 2 0 0
-22. y1 2 1 0
-23. y2 2 1 0
-24. y3 2 1 0
-25. procedA 1 7 0
-26. a1 3 0 1
-27. a2 3 1 1
-28. a3 3 2 1
-29. resultadoA 3 0 1
-30. marca
-31. a1 2 0 1
-32. a2 2 1 1
-33. a3 2 2 1
-34. resultadoA 2 0 1
-35. x1 2 0 0
-36. x2 2 0 0
-37. procedB 1 7 0
-38. b1 3 2 1
-39. b2 3 3 1
-40. resultadoB 3 2 1
-41. marca
-42. b1 2 2 1
-43. b2 2 3 1
-44. resultadoB 2 2 1
-45. xf 2 1 0
-46. x2 2 1 0
-47. procedC 1 7 0
-48. c1 3 3 1
-49. c2 3 0 1
-50. resultadoC 3 1 1
-51. marca
-52. c1 2 3 1
-53. c2 2 0 1
-54. resultadoC 2 1 1
-55. x1 2 1 0
-56. r1 2 1 0
-57. r2 2 1 0
-(Línea 43) Error semántico: variable r1111 no ha sido declarado
-(Línea 44) Error semántico: variable r2 no ha sido declarado
-(Línea 45) Error semántico: variable ribbit no ha sido declarado
-(Línea 45) Error semántico: variable r2 no ha sido declarado
-(Línea 45) Error semántico: intento de multiplicar expresiones no numéricas
-(Línea 47) Error semántico: variable r1 no ha sido declarado
-(Línea 47) Error semántico: intento de multiplicar expresiones no numéricas
-
-0. marca
-1. ve 2 0 0
-2. b 2 0 0
-3. j 2 0 0
-4. g 2 0 0
-5. n 2 0 0
-6. vf 2 1 0
-7. d 2 1 0
-8. gg 2 1 0
-9. mm 2 1 0
-10. vl 2 3 0
-11. pe 2 0 1
-12. pe2 2 0 1
-13. pf 2 1 1
-14. pf2 2 1 1
-15. pc 2 2 1
-16. pc2 2 2 1
-17. pl 2 3 1
-18. x1 2 0 0
-19. x2 2 0 0
-20. x3 2 0 0
-21. x4 2 0 0
-22. y1 2 1 0
-23. y2 2 1 0
-24. y3 2 1 0
-25. procedA 1 7 0
-26. a1 3 0 1
-27. a2 3 1 1
-28. a3 3 2 1
-29. resultadoA 3 0 1
-30. marca
-31. a1 2 0 1
-32. a2 2 1 1
-33. a3 2 2 1
-34. resultadoA 2 0 1
-35. x1 2 0 0
-36. x2 2 0 0
-37. procedB 1 7 0
-38. b1 3 2 1
-39. b2 3 3 1
-40. resultadoB 3 2 1
-41. procedD 1 7 0
-42. d1 3 1 1
-43. resultadoD 3 1 1
+1. ve 2 0 0 1
+2. b 2 0 0 1
+3. j 2 0 0 1
+4. g 2 0 0 1
+5. n 2 0 0 1
+6. vf 2 1 0 1
+7. d 2 1 0 1
+8. gg 2 1 0 1
+9. mm 2 1 0 1
+10. vc 2 2 0 1
+11. vl 2 3 0 1
+12. pe 2 0 1 1
+13. pe2 2 0 1 1
+14. pf 2 1 1 1
+15. pf2 2 1 1 1
+16. pc 2 2 1 1
+17. pc2 2 2 1 1
+18. pl 2 3 1 1
+19. x1 2 0 0 1
+20. x2 2 0 0 1
+21. x3 2 0 0 1
+22. x4 2 0 0 1
+23. y1 2 1 0 1
+24. y2 2 1 0 1
+25. y3 2 1 0 1
+26. r1 2 1 0 1
+27. r2 2 1 0 1
+28. procedA 1 7 0 4
+29. a1 3 0 1 1
+30. a2 3 1 1 1
+31. a3 3 2 1 1
+32. resultadoA 3 0 1 1
+33. marca
+34. a1 2 0 1 0
+35. a2 2 1 1 0
+36. a3 2 2 1 0
+37. resultadoA 2 0 1 0
+38. x1 2 0 0 1
+39. x2 2 0 0 1
+40. procedB 1 7 0 3
+41. b1 3 2 1 1
+42. b2 3 3 1 1
+43. resultadoB 3 2 1 1
 44. marca
-45. d1 2 1 1
-46. resultadoD 2 1 1
-47. dato 2 2 0
-48. valor 2 0 0
+45. b1 2 2 1 0
+46. b2 2 3 1 0
+47. resultadoB 2 2 1 0
+48. xf 2 1 0 1
+49. x2 2 1 0 1
+50. procedC 1 7 0 3
+51. c1 3 3 1 1
+52. c2 3 0 1 1
+53. resultadoC 3 1 1 1
+LLAMADA A PROCED EN LA ENTRADA 50
 
 0. marca
-1. ve 2 0 0
-2. b 2 0 0
-3. j 2 0 0
-4. g 2 0 0
-5. n 2 0 0
-6. vf 2 1 0
-7. d 2 1 0
-8. gg 2 1 0
-9. mm 2 1 0
-10. vl 2 3 0
-11. pe 2 0 1
-12. pe2 2 0 1
-13. pf 2 1 1
-14. pf2 2 1 1
-15. pc 2 2 1
-16. pc2 2 2 1
-17. pl 2 3 1
-18. x1 2 0 0
-19. x2 2 0 0
-20. x3 2 0 0
-21. x4 2 0 0
-22. y1 2 1 0
-23. y2 2 1 0
-24. y3 2 1 0
-25. procedA 1 7 0
-26. a1 3 0 1
-27. a2 3 1 1
-28. a3 3 2 1
-29. resultadoA 3 0 1
-30. marca
-31. a1 2 0 1
-32. a2 2 1 1
-33. a3 2 2 1
-34. resultadoA 2 0 1
-35. x1 2 0 0
-36. x2 2 0 0
-37. procedB 1 7 0
-38. b1 3 2 1
-39. b2 3 3 1
-40. resultadoB 3 2 1
-41. procedD 1 7 0
-42. d1 3 1 1
-43. resultadoD 3 1 1
+1. ve 2 0 0 1
+2. b 2 0 0 1
+3. j 2 0 0 1
+4. g 2 0 0 1
+5. n 2 0 0 1
+6. vf 2 1 0 1
+7. d 2 1 0 1
+8. gg 2 1 0 1
+9. mm 2 1 0 1
+10. vc 2 2 0 1
+11. vl 2 3 0 1
+12. pe 2 0 1 1
+13. pe2 2 0 1 1
+14. pf 2 1 1 1
+15. pf2 2 1 1 1
+16. pc 2 2 1 1
+17. pc2 2 2 1 1
+18. pl 2 3 1 1
+19. x1 2 0 0 1
+20. x2 2 0 0 1
+21. x3 2 0 0 1
+22. x4 2 0 0 1
+23. y1 2 1 0 1
+24. y2 2 1 0 1
+25. y3 2 1 0 1
+26. r1 2 1 0 1
+27. r2 2 1 0 1
+28. procedA 1 7 0 4
+29. a1 3 0 1 1
+30. a2 3 1 1 1
+31. a3 3 2 1 1
+32. resultadoA 3 0 1 1
+33. marca
+34. a1 2 0 1 0
+35. a2 2 1 1 0
+36. a3 2 2 1 0
+37. resultadoA 2 0 1 0
+38. x1 2 0 0 1
+39. x2 2 0 0 1
+40. procedB 1 7 0 3
+41. b1 3 2 1 1
+42. b2 3 3 1 1
+43. resultadoB 3 2 1 1
 44. marca
-45. d1 2 1 1
-46. resultadoD 2 1 1
-47. dato 2 2 0
-48. valor 2 0 0
-49. procedE 1 7 0
-50. e1 3 2 1
-51. e2 3 2 1
-52. resultadoE 3 2 1
-53. marca
-54. dato 2 0 0
-(Línea 93) Error semántico: intento de multiplicar dos listas
-(Línea 94) Error semántico: intento de multiplicar dos listas
+45. b1 2 2 1 0
+46. b2 2 3 1 0
+47. resultadoB 2 2 1 0
+48. xf 2 1 0 1
+49. x2 2 1 0 1
+50. procedC 1 7 0 3
+51. c1 3 3 1 1
+52. c2 3 0 1 1
+53. resultadoC 3 1 1 1
+LLAMADA A PROCED EN LA ENTRADA 50
+
+0. marca
+1. ve 2 0 0 1
+2. b 2 0 0 1
+3. j 2 0 0 1
+4. g 2 0 0 1
+5. n 2 0 0 1
+6. vf 2 1 0 1
+7. d 2 1 0 1
+8. gg 2 1 0 1
+9. mm 2 1 0 1
+10. vc 2 2 0 1
+11. vl 2 3 0 1
+12. pe 2 0 1 1
+13. pe2 2 0 1 1
+14. pf 2 1 1 1
+15. pf2 2 1 1 1
+16. pc 2 2 1 1
+17. pc2 2 2 1 1
+18. pl 2 3 1 1
+19. x1 2 0 0 1
+20. x2 2 0 0 1
+21. x3 2 0 0 1
+22. x4 2 0 0 1
+23. y1 2 1 0 1
+24. y2 2 1 0 1
+25. y3 2 1 0 1
+26. r1 2 1 0 1
+27. r2 2 1 0 1
+28. procedA 1 7 0 4
+29. a1 3 0 1 1
+30. a2 3 1 1 1
+31. a3 3 2 1 1
+32. resultadoA 3 0 1 1
+33. marca
+34. a1 2 0 1 0
+35. a2 2 1 1 0
+36. a3 2 2 1 0
+37. resultadoA 2 0 1 0
+38. x1 2 0 0 1
+39. x2 2 0 0 1
+40. procedB 1 7 0 3
+41. b1 3 2 1 1
+42. b2 3 3 1 1
+43. resultadoB 3 2 1 1
+44. marca
+45. b1 2 2 1 0
+46. b2 2 3 1 0
+47. resultadoB 2 2 1 0
+48. xf 2 1 0 1
+49. x2 2 1 0 1
+50. procedC 1 7 0 3
+51. c1 3 3 1 1
+52. c2 3 0 1 1
+53. resultadoC 3 1 1 1
