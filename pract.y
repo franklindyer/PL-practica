@@ -93,7 +93,7 @@ Declar_subprog : Cabecera_subprograma  { Subprog = 1; }
 ;
 
 Declar_de_variables_locales : MARCA_INI_DECLAR_VARIABLES Variables_locales MARCA_FIN_DECLAR_VARIABLES {
-                                    /* TS_imprimir(); */
+//                                    TS_imprimir();
                                 }
                             |
 ;
@@ -133,8 +133,16 @@ lista_argumentos : lista_argumentos COMA tipo IDENTIFICADOR {
                  | error
 ;
 
-lista_identificadores : lista_identificadores COMA IDENTIFICADOR
-                      | IDENTIFICADOR
+lista_identificadores : lista_identificadores COMA IDENTIFICADOR {
+                            int n = TS_RecogerEntrada($3.lexema);
+                            if (n == -1)
+                                printf("(Línea %d) Error semántico: identificador %s no declarado\n", yylineno, $3.lexema);                            
+                        }
+                      | IDENTIFICADOR {
+                            int n = TS_RecogerEntrada($1.lexema);
+                            if (n == -1)
+                                printf("(Línea %d) Error semántico: identificador %s no declarado\n", yylineno, $1.lexema);                            
+                        }
                       | error
 ;
 
@@ -204,8 +212,14 @@ Sentencia : bloque
           | lista_sent
 ;
 
-lista_sent : IDENTIFICADOR LISTA_UNARIO_POSTFIJO PYC
-           | LISTA_UNARIO_PREFIJO IDENTIFICADOR PYC
+lista_sent : IDENTIFICADOR LISTA_UNARIO_POSTFIJO PYC {
+                    if ($1.esLista != 1)
+                        printf("(Línea %d) Error semántico: intento de realizar operación de listas en algo que no sea lista\n", yylineno);
+                }
+           | LISTA_UNARIO_PREFIJO IDENTIFICADOR PYC {
+                    if ($2.esLista != 1)
+                        printf("(Línea %d) Error semántico: intento de realizar operación de listas en algo que no sea lista\n", yylineno);
+                }
 ;
 
 llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC {
@@ -221,7 +235,14 @@ llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC {
                     }
 ;
 
-sentencia_asignacion : IDENTIFICADOR ASIGN expresion PYC
+sentencia_asignacion : IDENTIFICADOR ASIGN expresion PYC {
+                                int indice = TS_RecogerEntrada($1.lexema);
+                                if (indice == -1) {
+                                    printf("(Línea %d) Error semántico: variable %s no ha sido declarado\n", yylineno, $1.lexema);
+                                }
+                                if (TS[indice].tipoDato != $3.tipo)
+                                    printf("(Línea %d) Error semántico: intento de asignar un variable a un valor de tipo distinto\n", yylineno);
+                            }
 ;
 
 sentencia_if : NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia {
@@ -252,10 +273,22 @@ sentencia_entrada : NOMB_ENTRADA lista_identificadores PYC
 sentencia_salida : NOMB_SALIDA lista_expresiones_o_cadena PYC
 ;
 
-lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena
-                           | CADENA COMA lista_expresiones_o_cadena
-                           | expresion
-                           | CADENA
+lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena {
+                                    if ($1.tipo != $3.tipo)
+                                        printf("(Línea %d) Error semántico: lista de expresiones con tipos distintos\n", yylineno);
+                                    $$.tipo = $1.tipo;
+                                }
+                           | CADENA COMA lista_expresiones_o_cadena {
+                                    if ($3.tipo != cadena)
+                                        printf("(Línea %d) Error semántico: lista de expresiones con tipos distintos\n", yylineno);
+                                    $$.tipo = cadena;
+                                }
+                           | expresion {
+                                    $$.tipo = $1.tipo;
+                                }
+                           | CADENA {
+                                    $$.tipo = cadena;
+                                }
                            |
 ;
 
@@ -287,6 +320,8 @@ expresion : PARIZQ expresion PARDER {
                 }                
             }
           | expresion OP_BINARIO_MULT expresion {
+                if ($1.tipo != $3.tipo)
+                    printf("(Línea %d) Error semántico: intento de operar en dos números de tipos distintos\n", yylineno);
                 switch ($2.atrib) {
                     case OPBIN_MULT_MOD :
                         if ($1.tipo != entero || $3.tipo != entero)
@@ -305,7 +340,7 @@ expresion : PARIZQ expresion PARDER {
                         if ($1.tipo == real || $3.tipo == real) $$.tipo = real;
                         $$.esLista = $1.esLista || $3.esLista;
                 }
-                $$.tipo = entero;
+                $$.tipo = $1.tipo;
             }
           | expresion OP_BINARIO_IG expresion {
                 if ($1.tipo != $3.tipo || $1.esLista != $3.esLista)
@@ -317,6 +352,8 @@ expresion : PARIZQ expresion PARDER {
                     printf("(Línea %d) Error semántico: intento de comparar variables no numéricos\n", yylineno);
                 else if ($3.tipo != entero && $3.tipo != real)
                     printf("(Línea %d) Error semántico: intento de comparar variables no numéricos\n", yylineno);
+                else if ($1.tipo != $3.tipo)
+                    printf("(Línea %d) Error semántico: intento de operar en dos números de tipos distintos\n", yylineno);
                 $$.tipo = booleano;
             }
           | expresion OP_BINARIO_AND_LOG expresion {
@@ -337,7 +374,8 @@ expresion : PARIZQ expresion PARDER {
           | expresion OP_BINARIO_ASTAST expresion {
                 if ($1.tipo != lista || $3.tipo != lista)
                     printf("(Línea %d) Error semántico: intento de concatenar variables que no son listas\n", yylineno);
-                $$.tipo = lista;
+                $$.tipo = $3.tipo;
+                $$.esLista = 1;
             }
           | OP_UN_BIN expresion %prec OP_UNARIO {
                switch ($1.atrib) {
@@ -348,9 +386,18 @@ expresion : PARIZQ expresion PARDER {
                     case OPUNBIN_MENOS :
                         if ($2.tipo != real && $2.tipo != entero)
                             printf("(Línea %d) Error semántico: intento de negar un variable no numérico\n", yylineno);
-                } 
+                }
+                $$.tipo = $2.tipo; 
             }
-          | expresion OP_UN_BIN expresion
+          | expresion OP_UN_BIN expresion {
+                if ($1.tipo != $3.tipo)
+                    printf("(Línea %d) Error semántico: intento de operar en dos valores de tipos distintos\n", yylineno);
+                if ($1.tipo != real && $1.tipo != entero)
+                    printf("(Línea %d) Error semántico: intento de operar en valores no numéricos\n", yylineno);
+                if ($3.tipo != real && $3.tipo != entero)
+                    printf("(Línea %d) Error semántico: intento de operar en valores no numéricos\n", yylineno);
+                $$.tipo = $1.tipo;
+            }
           | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion {
                 if ($1.esLista == 0)
                     printf("(Línea %d) Error semántico: intento de realizar operación de listas con algo que no sea lista\n", yylineno);
@@ -358,6 +405,8 @@ expresion : PARIZQ expresion PARDER {
                     printf("(Línea %d) Error semántico: intento de meter valor en una lista de tipo distinto\n", yylineno);
                 if ($5.tipo != entero)
                     printf("(Línea %d) Error semántico: los índices de una lista deben ser números enteros\n", yylineno);
+                $$.tipo = $1.tipo;
+                $$.esLista = 1;
             }
           | IDENTIFICADOR {
                 int indice = TS_RecogerEntrada($1.lexema);
@@ -373,9 +422,15 @@ expresion : PARIZQ expresion PARDER {
           | CONSTANTE {
                 $$.tipo = $1.tipo;
             }
-          | constante_lista
+          | constante_lista {
+                $$.tipo = $1.tipo;
+                $$.esLista = 1;
+            }
           | error
 ;
 
-constante_lista : CORIZQ lista_expresiones CORDER
+constante_lista : CORIZQ lista_expresiones_o_cadena CORDER {
+                        $$.tipo = $2.tipo;
+                        $$.esLista = 1;
+                    }
 ;
