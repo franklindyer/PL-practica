@@ -1,6 +1,6 @@
 principal {
-    œef variables
-        f0, f1;
+    def variables
+        entero f0, f1;
         entero n;
     enddef variables
 

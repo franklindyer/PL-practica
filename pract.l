@@ -3,7 +3,7 @@
 #include "codigos.h"
 #include "tabla_structs.c"
 #include "y.tab.h"
-#define DEBUG 0
+#define DEBUG 1
 
 #define YYSTYPE atributos
 %}
@@ -79,30 +79,50 @@ OTROS .
 "entero" {
     if (DEBUG) printf("Tipo primitivo: entero\n"); 
     yylval.tipo = entero;
+
+    yylval.codigo = malloc(sizeof(char) * 3);
+    strcpy(yylval.codigo, "int");
+
     return TIPO_PRIM;
 }
 
 "real" {
     if (DEBUG) printf("Tipo primitivo: real\n");
     yylval.tipo = real;
+
+    yylval.codigo = malloc(sizeof(char) * 5);
+    strcpy(yylval.codigo, "float");
+
     return TIPO_PRIM;
 }
 
 "caracter" {
     if (DEBUG) printf("Tipo primitivo: caracter\n");
     yylval.tipo = caracter;
+
+    yylval.codigo = malloc(sizeof(char) * 4);
+    strcpy(yylval.codigo, "char");
+
     return TIPO_PRIM;
 }
 
 "booleano" {
     if (DEBUG) printf("Tipo primitivo: booleano\n");
     yylval.tipo = booleano;
+
+    yylval.codigo = malloc(sizeof(char) * 5);
+    strcpy(yylval.codigo, "short");
+
     return TIPO_PRIM;
 }
 
 "cadena" {
     if (DEBUG) printf("Tipo primitivo: cadena\n");
-    yylval.tipo = booleano;
+    yylval.tipo = cadena;
+
+    yylval.codigo = malloc(sizeof(char) * 5);
+    strcpy(yylval.codigo, "char*");
+
     return TIPO_PRIM;
 }
 
@@ -177,69 +197,117 @@ OTROS .
 "%" {
     if (DEBUG) printf("Operación binaria: %s\n", "%");
     yylval.atrib = OPBIN_MULT_MOD;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "%");
+    
     return OP_BINARIO_MULT;
 }
 
 "*" {
     if (DEBUG) printf("Operación binaria: *\n");
     yylval.atrib = OPBIN_MULT_POR;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "*");
+    
     return OP_BINARIO_MULT;
 }
 
 "/" {
     if (DEBUG) printf("Operación binaria: /\n");
     yylval.atrib = OPBIN_MULT_PART;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "/");
+    
     return OP_BINARIO_MULT;
 }
 
 "==" {
     if (DEBUG) printf("Operación binaria: ==\n");
     yylval.atrib = OPBIN_IGUAL;
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "==");
+    
     return OP_BINARIO_IG;
 }
 
 "<" {
     if (DEBUG) printf("Operación binaria: <\n");
     yylval.atrib = OPBIN_COMP_MENOR;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "<");
+    
     return OP_BINARIO_COMP;
 }
 
 ">" {
     if (DEBUG) printf("Operación binaria: >\n");
     yylval.atrib = OPBIN_COMP_MAYOR;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, ">");
+    
     return OP_BINARIO_COMP;
 }
 
 "<=" {
     if (DEBUG) printf("Operación binaria: <=\n");
     yylval.atrib = OPBIN_COMP_MENORIG;
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "<=");
+    
     return OP_BINARIO_COMP;
 }
 
 ">=" {
     if (DEBUG) printf("Operación binaria: >=\n");
     yylval.atrib = OPBIN_COMP_MAYORIG;
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, ">=");
+    
     return OP_BINARIO_COMP;
 }
 
 "!=" {
     if (DEBUG) printf("Operación binaria: !=\n");
     yylval.atrib = OPBIN_DESIGUAL;
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "!=");
+    
     return OP_BINARIO_IG;
 }
 
 "&&" {
     if (DEBUG) printf("Operación binaria: &&\n");
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "&&");
+    
     return OP_BINARIO_AND_LOG;
 }
 
 "||" {
     if (DEBUG) printf("Operación binaria: ||\n");
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "||");
+    
     return OP_BINARIO_OR_LOG;
 }
 
 "^" {
     if (DEBUG) printf("Operación binaria: ^\n");
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "^");
+    
     return OP_BINARIO_XOR;
 }
 
@@ -251,6 +319,10 @@ OTROS .
 "!" {
     if (DEBUG) printf("Operación unaria: !\n");
     yylval.atrib = OPUN_NO;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "!");
+    
     return OP_UNARIO;
 }
 
@@ -276,12 +348,20 @@ OTROS .
 "+" {
     if (DEBUG) printf("Operación que puede ser o unaria o binaria: +\n");
     yylval.atrib = OPUNBIN_MAS;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "+");
+    
     return OP_UN_BIN;
 }
 
 "-" {
     if (DEBUG) printf("Operación que puede ser o unaria o binaria: -\n");
     yylval.atrib = OPUNBIN_MENOS;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "-");
+    
     return OP_UN_BIN;
 }
 
@@ -297,6 +377,10 @@ OTROS .
     if (DEBUG) printf("Constante entero: %s\n", yytext);
     yylval.tipo = entero;
     yylval.atrib = COD_TIPO_ENTERO;
+
+    yylval.codigo = malloc(sizeof(char) * 20);
+    sprintf(yylval.codigo, "%d",(int)strtol(yytext, NULL, 10));
+    
     return CONSTANTE;
 }
 
@@ -304,6 +388,10 @@ OTROS .
     if (DEBUG) printf("Constante real: %s\n", yytext);
     yylval.tipo = real;
     yylval.atrib = COD_TIPO_REAL;
+
+    yylval.codigo = malloc(sizeof(char) * 20);
+    sprintf(yylval.codigo, "%f",strtof(yytext, NULL));
+    
     return CONSTANTE;
 }
 
@@ -311,6 +399,11 @@ OTROS .
     if (DEBUG) printf("Constante booleano: %s\n", yytext);
     yylval.tipo = booleano;
     yylval.atrib = COD_TIPO_BOOLEANO;
+
+    yylval.codigo = malloc(sizeof(char));
+    if (strcmp(yytext, "cierto") == 0) strcpy(yylval.codigo, "1");
+    else strcpy(yylval.codigo, "0");
+    
     return CONSTANTE;
 }
 
@@ -318,6 +411,10 @@ OTROS .
     if (DEBUG) printf("Constante caracter: %s\n", yytext);
     yylval.tipo = caracter;
     yylval.atrib = COD_TIPO_CARACTER;
+
+    yylval.codigo = malloc(3 * sizeof(char));
+    sprintf(yylval.codigo, "%s", yytext);
+    
     return CONSTANTE;
 }
 

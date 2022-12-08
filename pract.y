@@ -1,13 +1,18 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <fcntl.h>
 #include "tabla_simb.c"
+#include "traduccion.c"
 #include "codigos.h"
 #define YYERROR_VERBOSE
 
 #define YYSTYPE atributos
 
 int yylineno;
+int fd;
 
 int yylex();
 
@@ -25,7 +30,12 @@ int yywrap()
 
 int main()
 {
+    if ((fd = open("generado.c", O_WRONLY | O_CREAT | O_TRUNC), S_IRWXU) < 0) {
+        perror("Error en abrir archivo\n");
+        exit(-1);
+    }
     yyparse();
+    close(fd);
 }
 
 %}
@@ -70,7 +80,13 @@ int main()
 
 %%
 
-Programa : CABECERA_PROGRAMA bloque;
+Programa : CABECERA_PROGRAMA bloque {
+                $$.codigo = malloc(sizeof(char) * (strlen($2.codigo) + 100));
+                sprintf($$.codigo, PROGRAMA_ESQ, $2.codigo);
+                escribir(fd, $$.codigo);
+                if (close(fd) < 0)
+                    perror("Error en cerrar\n");
+            };
 
 bloque : Inicio_de_bloque { 
                 TS_InsertaMARCA(); 
@@ -81,7 +97,13 @@ bloque : Inicio_de_bloque {
          Declar_de_variables_locales 
          Declar_de_subprogs 
          Sentencias 
-         Fin_de_bloque { TS_QuitarHastaMarca(); }
+         Fin_de_bloque { 
+                $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen($5.codigo) + 5));
+                sprintf($$.codigo, BLOQUE_ESQ, $3.codigo, $5.codigo);
+                free($3.codigo);
+                free($5.codigo);
+                TS_QuitarHastaMarca();
+            }
 ;
 
 Declar_de_subprogs : Declar_de_subprogs Declar_subprog
@@ -93,9 +115,12 @@ Declar_subprog : Cabecera_subprograma  { Subprog = 1; }
 ;
 
 Declar_de_variables_locales : MARCA_INI_DECLAR_VARIABLES Variables_locales MARCA_FIN_DECLAR_VARIABLES {
-//                                    TS_imprimir();
+                                    $$.codigo = $2.codigo;
                                 }
-                            |
+                            | {
+                                    $$.codigo = malloc(sizeof(char));
+                                    *$$.codigo = '\n';
+                                }
 ;
 
 Cabecera_subprograma : SUBPROG_CLAVE 
@@ -115,8 +140,19 @@ Inicio_de_bloque : LLAVIZQ
 Fin_de_bloque : LLAVDER
 ;
 
-Variables_locales : Variables_locales Cuerpo_declar_variables
-                  |
+Variables_locales : Variables_locales Cuerpo_declar_variables {
+                            if (*$1.codigo == '\0') $$.codigo = $2.codigo;
+                            else {
+                                $$.codigo = malloc(sizeof(char) * (1 + strlen($1.codigo) + strlen($2.codigo)));
+                                sprintf($$.codigo, "%s\n%s", $1.codigo, $2.codigo);
+                                free($2.codigo);
+                            }
+                            free($1.codigo);
+                        }
+                  | {
+                        $$.codigo = malloc(sizeof(char));
+                        *$$.codigo = '\0';
+                    }
 ;
 
 lista_argumentos : lista_argumentos COMA tipo IDENTIFICADOR {
@@ -169,27 +205,43 @@ Cuerpo_declar_variables : tipo {
                                 esListaTmp = $1.esLista;
                             } 
                           declar_identificadores 
-                          PYC
+                          PYC {
+                                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 2));
+                                sprintf($$.codigo, "%s %s;", $1.codigo, $3.codigo);
+                                free($1.codigo);
+                                free($3.codigo);
+                            }
                         | error
 ;
 
 declar_identificadores : declar_identificadores COMA IDENTIFICADOR {
                                 $3.tipo = tipoTmp;
                                 $3.esLista = esListaTmp;
+                                $3.codigo = strdup(varnuevo());
                                 if (TS_InsertaIDENT($3) == 1)
                                     printf("(Línea %d) Error semántico: variable local %s duplicado\n", yylineno, $3.lexema);
+                                
+                                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 1 + strlen($3.codigo)));
+                                sprintf($$.codigo, "%s,%s", $1.codigo, $3.codigo);
+                                free($1.codigo);
+                                free($3.codigo);
                             }
                        | IDENTIFICADOR {
                                 $1.tipo = tipoTmp;
                                 $1.esLista = esListaTmp;
+                                $1.codigo = strdup(varnuevo());
                                 if (TS_InsertaIDENT($1) == 1)
                                     printf("(Línea %d) Error semántico: variable local %s duplicado\n", yylineno, $1.lexema);
+                                
+                                $$.codigo = $1.codigo;
                             }
 ;
 
 tipo : TIPO_PRIM { 
             $$.tipo = $1.tipo; 
             $$.esLista = 0;
+
+            $$.codigo = $1.codigo;
         }
      | TIPO_LISTA TIPO_PRIM { 
             $$.tipo = $2.tipo; 
@@ -197,12 +249,24 @@ tipo : TIPO_PRIM {
         }
 ;
 
-Sentencias : Sentencia Sentencias
-           |
+Sentencias : Sentencia Sentencias {
+                    if (*$2.codigo == 0) {
+                        $$.codigo = $1.codigo;
+                    } else {
+                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + 1));
+                        sprintf($$.codigo, "%s\n%s", $1.codigo, $2.codigo);
+                    }
+                }
+           | {
+                $$.codigo = malloc(sizeof(char));
+                *$$.codigo = '\0';
+            }
 ;
 
 Sentencia : bloque
-          | sentencia_asignacion
+          | sentencia_asignacion {
+                $$.codigo = $1.codigo;
+            }
           | sentencia_if
           | sentencia_while
           | sentencia_for
@@ -242,6 +306,13 @@ sentencia_asignacion : IDENTIFICADOR ASIGN expresion PYC {
                                 }
                                 if (TS[indice].tipoDato != $3.tipo)
                                     printf("(Línea %d) Error semántico: intento de asignar un variable a un valor de tipo distinto\n", yylineno);
+
+                                int n = TS_RecogerEntrada($1.lexema);
+                                char* id = TS[n].alias;
+                                $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen(id) + strlen($3.tmp) + 5));
+                                sprintf($$.codigo, ASIGN_ESQ, $3.codigo, id, $3.tmp);
+                                free($3.tmp);
+                                free($3.codigo);
                             }
 ;
 
@@ -294,6 +365,9 @@ lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena {
 
 expresion : PARIZQ expresion PARDER {
                 $$.tipo = $2.tipo;
+
+                $$.codigo = $2.codigo;
+                $$.tmp = $2.tmp;
             }
           | OP_UNARIO expresion {
                 switch ($2.atrib) {
@@ -318,6 +392,11 @@ expresion : PARIZQ expresion PARDER {
                     default :
                         break;
                 }                
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.tmp) + 9));
+                sprintf($$.codigo, OPUN_ESQ, $2.codigo, tipo, $$.tmp, $$.tmp, $1.codigo, $2.tmp);
             }
           | expresion OP_BINARIO_MULT expresion {
                 if ($1.tipo != $3.tipo)
@@ -341,11 +420,21 @@ expresion : PARIZQ expresion PARDER {
                         $$.esLista = $1.esLista || $3.esLista;
                 }
                 $$.tipo = $1.tipo;
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_BINARIO_IG expresion {
                 if ($1.tipo != $3.tipo || $1.esLista != $3.esLista)
                     printf("(Línea %d) Error semántico: intento de comparar variables de tipos distintos\n", yylineno);
                 $$.tipo = booleano;
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_BINARIO_COMP expresion {
                 if ($1.tipo != entero && $1.tipo != real)
@@ -355,21 +444,41 @@ expresion : PARIZQ expresion PARDER {
                 else if ($1.tipo != $3.tipo)
                     printf("(Línea %d) Error semántico: intento de operar en dos números de tipos distintos\n", yylineno);
                 $$.tipo = booleano;
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_BINARIO_AND_LOG expresion {
                 if ($1.tipo != booleano || $3.tipo != booleano)
                     printf("(Línea %d) Error semántico: intento de realizar AND con variables no booleanos\n", yylineno);
                 $$.tipo = booleano;
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_BINARIO_OR_LOG expresion {
                 if ($1.tipo != booleano || $3.tipo != booleano)
                     printf("(Línea %d) Error semántico: intento de realizar OR con variables no booleanos\n", yylineno);
                 $$.tipo = booleano;
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_BINARIO_XOR expresion {
                 if ($1.tipo != booleano || $3.tipo != booleano)
                     printf("(Línea %d) Error semántico: intento de realizar XOR con variables no booleanos\n", yylineno);
                 $$.tipo = booleano;
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_BINARIO_ASTAST expresion {
                 if ($1.tipo != lista || $3.tipo != lista)
@@ -397,6 +506,11 @@ expresion : PARIZQ expresion PARDER {
                 if ($3.tipo != real && $3.tipo != entero)
                     printf("(Línea %d) Error semántico: intento de operar en valores no numéricos\n", yylineno);
                 $$.tipo = $1.tipo;
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion {
                 if ($1.esLista == 0)
@@ -417,10 +531,23 @@ expresion : PARIZQ expresion PARDER {
                     entradaTS entrada = TS[indice];
                     $$.tipo = entrada.tipoDato;
                     $$.esLista = entrada.esLista;
-                } 
+                }
+
+                printf("pr1\n");
+                $$.codigo = malloc(sizeof(char));
+                $$.codigo = "";
+                int n = TS_RecogerEntrada($1.lexema);
+                char* id = TS[n].alias;
+                $$.tmp = malloc(sizeof(char) * strlen(id));
+                $$.tmp = strdup(id); 
+                printf("pr2\n");
             }
           | CONSTANTE {
                 $$.tipo = $1.tipo;
+
+                $$.codigo = malloc(sizeof(char));
+                *$$.codigo = 0;
+                $$.tmp = $1.codigo;
             }
           | constante_lista {
                 $$.tipo = $1.tipo;

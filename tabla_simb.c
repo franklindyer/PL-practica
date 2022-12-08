@@ -48,6 +48,7 @@ int TS_InsertaIDENT(atributos atrib) {
         entradaTS nuevo;
         nuevo.entrada = variable;
         nuevo.nombre = strdup(atrib.lexema);
+        nuevo.alias = strdup(atrib.codigo);
         nuevo.tipoDato = atrib.tipo;
         nuevo.esLista = atrib.esLista;
 

@@ -561,7 +561,7 @@ char *yytext;
 #include "codigos.h"
 #include "tabla_structs.c"
 #include "y.tab.h"
-#define DEBUG 0
+#define DEBUG 1
 
 #define YYSTYPE atributos
 #line 568 "lex.yy.c"
@@ -870,48 +870,68 @@ YY_RULE_SETUP
 {
     if (DEBUG) printf("Tipo primitivo: entero\n"); 
     yylval.tipo = entero;
+
+    yylval.codigo = malloc(sizeof(char) * 3);
+    strcpy(yylval.codigo, "int");
+
     return TIPO_PRIM;
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 85 "pract.l"
+#line 89 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: real\n");
     yylval.tipo = real;
+
+    yylval.codigo = malloc(sizeof(char) * 5);
+    strcpy(yylval.codigo, "float");
+
     return TIPO_PRIM;
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 91 "pract.l"
+#line 99 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: caracter\n");
     yylval.tipo = caracter;
+
+    yylval.codigo = malloc(sizeof(char) * 4);
+    strcpy(yylval.codigo, "char");
+
     return TIPO_PRIM;
 }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 97 "pract.l"
+#line 109 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: booleano\n");
     yylval.tipo = booleano;
+
+    yylval.codigo = malloc(sizeof(char) * 5);
+    strcpy(yylval.codigo, "short");
+
     return TIPO_PRIM;
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 103 "pract.l"
+#line 119 "pract.l"
 {
     if (DEBUG) printf("Tipo primitivo: cadena\n");
-    yylval.tipo = booleano;
+    yylval.tipo = cadena;
+
+    yylval.codigo = malloc(sizeof(char) * 5);
+    strcpy(yylval.codigo, "char*");
+
     return TIPO_PRIM;
 }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 109 "pract.l"
+#line 129 "pract.l"
 {
     if (DEBUG) printf("Tipo de lista\n");
     yylval.esLista = 1;
@@ -920,7 +940,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 115 "pract.l"
+#line 135 "pract.l"
 {
     if (DEBUG) printf("Estructura if\n");
     return NOMB_IF;
@@ -928,7 +948,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 120 "pract.l"
+#line 140 "pract.l"
 {
     if (DEBUG) printf("Estructura then\n");
     return NOMB_THEN;
@@ -936,7 +956,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 125 "pract.l"
+#line 145 "pract.l"
 {
     if (DEBUG) printf("Estructura else\n");
     return NOMB_ELSE;
@@ -944,7 +964,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 130 "pract.l"
+#line 150 "pract.l"
 {
     if (DEBUG) printf("Estructura while\n");
     return NOMB_WHILE;
@@ -952,7 +972,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 135 "pract.l"
+#line 155 "pract.l"
 {
     if (DEBUG) printf("Estructura for\n");
     return NOMB_FOR;
@@ -960,7 +980,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 140 "pract.l"
+#line 160 "pract.l"
 {
     if (DEBUG) printf("Aceptar entrada\n");
     return NOMB_ENTRADA;
@@ -968,7 +988,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 145 "pract.l"
+#line 165 "pract.l"
 {
     if (DEBUG) printf("Producir salida\n");
     return NOMB_SALIDA;
@@ -976,7 +996,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 150 "pract.l"
+#line 170 "pract.l"
 {
     if (DEBUG) printf("Operación de listas: <<\n");
     yylval.atrib = OPLISTA_IZQ;
@@ -985,7 +1005,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 156 "pract.l"
+#line 176 "pract.l"
 {
     if (DEBUG) printf("Operación de listas: >>\n");
     yylval.atrib = OPLISTA_DER;
@@ -994,7 +1014,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 162 "pract.l"
+#line 182 "pract.l"
 {
     if (DEBUG) printf("Operación de listas: $\n");
     return LISTA_UNARIO_PREFIJO;
@@ -1002,7 +1022,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 167 "pract.l"
+#line 187 "pract.l"
 {
     if (DEBUG) printf("Primera parte de operación ternaria o bien una operación unaria: %s\n", yytext);
     return OP_TERN_PRIM_UN;
@@ -1010,7 +1030,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 172 "pract.l"
+#line 192 "pract.l"
 {
     if (DEBUG) printf("Segunda parte de operación ternaria: %s\n", yytext);
     return OP_TERN_SEG;
@@ -1018,112 +1038,160 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 177 "pract.l"
+#line 197 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: %s\n", "%");
     yylval.atrib = OPBIN_MULT_MOD;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "%");
+    
     return OP_BINARIO_MULT;
 }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 183 "pract.l"
+#line 207 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: *\n");
     yylval.atrib = OPBIN_MULT_POR;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "*");
+    
     return OP_BINARIO_MULT;
 }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 189 "pract.l"
+#line 217 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: /\n");
     yylval.atrib = OPBIN_MULT_PART;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "/");
+    
     return OP_BINARIO_MULT;
 }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 195 "pract.l"
+#line 227 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: ==\n");
     yylval.atrib = OPBIN_IGUAL;
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "==");
+    
     return OP_BINARIO_IG;
 }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 201 "pract.l"
+#line 237 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: <\n");
     yylval.atrib = OPBIN_COMP_MENOR;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "<");
+    
     return OP_BINARIO_COMP;
 }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 207 "pract.l"
+#line 247 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: >\n");
     yylval.atrib = OPBIN_COMP_MAYOR;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, ">");
+    
     return OP_BINARIO_COMP;
 }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 213 "pract.l"
+#line 257 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: <=\n");
     yylval.atrib = OPBIN_COMP_MENORIG;
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "<=");
+    
     return OP_BINARIO_COMP;
 }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 219 "pract.l"
+#line 267 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: >=\n");
     yylval.atrib = OPBIN_COMP_MAYORIG;
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, ">=");
+    
     return OP_BINARIO_COMP;
 }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 225 "pract.l"
+#line 277 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: !=\n");
     yylval.atrib = OPBIN_DESIGUAL;
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "!=");
+    
     return OP_BINARIO_IG;
 }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 231 "pract.l"
+#line 287 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: &&\n");
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "&&");
+    
     return OP_BINARIO_AND_LOG;
 }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 236 "pract.l"
+#line 296 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: ||\n");
+
+    yylval.codigo = malloc(2 * sizeof(char));
+    strcpy(yylval.codigo, "||");
+    
     return OP_BINARIO_OR_LOG;
 }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 241 "pract.l"
+#line 305 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: ^\n");
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "^");
+    
     return OP_BINARIO_XOR;
 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 246 "pract.l"
+#line 314 "pract.l"
 {
     if (DEBUG) printf("Operación binaria: **\n");
     return OP_BINARIO_ASTAST;
@@ -1131,16 +1199,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 251 "pract.l"
+#line 319 "pract.l"
 {
     if (DEBUG) printf("Operación unaria: !\n");
     yylval.atrib = OPUN_NO;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "!");
+    
     return OP_UNARIO;
 }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 257 "pract.l"
+#line 329 "pract.l"
 {
     if (DEBUG) printf("Operación unaria: #\n");
     yylval.atrib = OPUN_HASH;
@@ -1149,7 +1221,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 263 "pract.l"
+#line 335 "pract.l"
 {
     if (DEBUG) printf("Operación unaria: ?\n");
     yylval.atrib = OPUN_INTER;
@@ -1158,7 +1230,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 269 "pract.l"
+#line 341 "pract.l"
 {
     if (DEBUG) printf("Operación unaria: --\n");
     return OP_BINARIO_MENMEN;
@@ -1166,26 +1238,34 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 276 "pract.l"
+#line 348 "pract.l"
 {
     if (DEBUG) printf("Operación que puede ser o unaria o binaria: +\n");
     yylval.atrib = OPUNBIN_MAS;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "+");
+    
     return OP_UN_BIN;
 }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 282 "pract.l"
+#line 358 "pract.l"
 {
     if (DEBUG) printf("Operación que puede ser o unaria o binaria: -\n");
     yylval.atrib = OPUNBIN_MENOS;
+
+    yylval.codigo = malloc(sizeof(char));
+    strcpy(yylval.codigo, "-");
+    
     return OP_UN_BIN;
 }
 	YY_BREAK
 case 42:
 /* rule 42 can match eol */
 YY_RULE_SETUP
-#line 289 "pract.l"
+#line 369 "pract.l"
 {
     if (DEBUG) printf("Cadena: %s\n", yytext);
     yylval.tipo = cadena;
@@ -1195,48 +1275,65 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 296 "pract.l"
+#line 376 "pract.l"
 {
     if (DEBUG) printf("Constante entero: %s\n", yytext);
     yylval.tipo = entero;
     yylval.atrib = COD_TIPO_ENTERO;
+
+    yylval.codigo = malloc(sizeof(char) * 20);
+    sprintf(yylval.codigo, "%d",(int)strtol(yytext, NULL, 10));
+    
     return CONSTANTE;
 }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 303 "pract.l"
+#line 387 "pract.l"
 {
     if (DEBUG) printf("Constante real: %s\n", yytext);
     yylval.tipo = real;
     yylval.atrib = COD_TIPO_REAL;
+
+    yylval.codigo = malloc(sizeof(char) * 20);
+    sprintf(yylval.codigo, "%f",strtof(yytext, NULL));
+    
     return CONSTANTE;
 }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 310 "pract.l"
+#line 398 "pract.l"
 {
     if (DEBUG) printf("Constante booleano: %s\n", yytext);
     yylval.tipo = booleano;
     yylval.atrib = COD_TIPO_BOOLEANO;
+
+    yylval.codigo = malloc(sizeof(char));
+    if (strcmp(yytext, "cierto") == 0) strcpy(yylval.codigo, "1");
+    else strcpy(yylval.codigo, "0");
+    
     return CONSTANTE;
 }
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 317 "pract.l"
+#line 410 "pract.l"
 {
     if (DEBUG) printf("Constante caracter: %s\n", yytext);
     yylval.tipo = caracter;
     yylval.atrib = COD_TIPO_CARACTER;
+
+    yylval.codigo = malloc(3 * sizeof(char));
+    sprintf(yylval.codigo, "%s", yytext);
+    
     return CONSTANTE;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 324 "pract.l"
+#line 421 "pract.l"
 {
     if (DEBUG) printf("Identificador: %s\n", yytext);
     yylval.lexema = strdup(yytext);
@@ -1245,7 +1342,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 332 "pract.l"
+#line 429 "pract.l"
 {
     if (DEBUG) printf("Parentesis izquierda\n");
     return PARIZQ;
@@ -1253,7 +1350,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 337 "pract.l"
+#line 434 "pract.l"
 {
     if (DEBUG) printf("Parentesis derecha\n");
     return PARDER;
@@ -1261,7 +1358,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 342 "pract.l"
+#line 439 "pract.l"
 {
     if (DEBUG) printf("Corchete izquierda\n");
     return CORIZQ;
@@ -1269,7 +1366,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 347 "pract.l"
+#line 444 "pract.l"
 {
     if (DEBUG) printf("Corchete derecha\n");
     return CORDER;
@@ -1277,7 +1374,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 352 "pract.l"
+#line 449 "pract.l"
 {
     if (DEBUG) printf("Llave izquierda\n");
     return LLAVIZQ;
@@ -1285,7 +1382,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 357 "pract.l"
+#line 454 "pract.l"
 {
     if (DEBUG) printf("Llave derecha\n");
     return LLAVDER;
@@ -1293,7 +1390,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 362 "pract.l"
+#line 459 "pract.l"
 {
     if (DEBUG) printf("Coma\n");
     return COMA;
@@ -1301,7 +1398,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 367 "pract.l"
+#line 464 "pract.l"
 {
     if (DEBUG) printf("Punto y coma\n");
     return PYC;
@@ -1309,7 +1406,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 372 "pract.l"
+#line 469 "pract.l"
 {
     if (DEBUG) printf("Asignación =\n");
     return ASIGN;
@@ -1318,27 +1415,27 @@ YY_RULE_SETUP
 case 57:
 /* rule 57 can match eol */
 YY_RULE_SETUP
-#line 377 "pract.l"
+#line 474 "pract.l"
 {yylineno++;};
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 378 "pract.l"
+#line 475 "pract.l"
 ;
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 380 "pract.l"
+#line 477 "pract.l"
 {
     printf("\n(Linea %d) Error léxico: token %s\n", yylineno, yytext);
 }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 384 "pract.l"
+#line 481 "pract.l"
 ECHO;
 	YY_BREAK
-#line 1342 "lex.yy.c"
+#line 1439 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2335,7 +2432,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 384 "pract.l"
+#line 481 "pract.l"
 
 
 

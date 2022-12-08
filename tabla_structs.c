@@ -24,6 +24,7 @@ typedef enum {
 typedef struct {
     tipoEntrada entrada;
     char* nombre;
+    char* alias;
     dtipo tipoDato;
     unsigned int parametros;
     char esLista;
@@ -34,6 +35,8 @@ typedef struct {
     int atrib;
     unsigned int parametros;
     char *lexema;
+    char *codigo;
+    char *tmp;
     dtipo tipo;
     char esLista;
 } atributos;

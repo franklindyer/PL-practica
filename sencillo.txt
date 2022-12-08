@@ -1,0 +1,12 @@
+principal {
+    def variables
+        real x, y;
+        real z;
+        booleano b;
+    enddef variables
+
+    x = 3.0;
+    y = 4.0;
+    z = (x + y)/2.0;
+    b = (z + 1) < (4.1 - 0.9)/5.5;
+}
