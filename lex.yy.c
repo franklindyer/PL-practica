@@ -1271,8 +1271,8 @@ YY_RULE_SETUP
     yylval.tipo = cadena;
     yylval.atrib = COD_TIPO_CADENA;
 
-    yylval.codigo = malloc(sizeof(char) * strlen(yytext));
-    yylval.codigo = strdup(yytext);
+    yylval.codigo = malloc(sizeof(char) * (strlen(yytext) + 1));
+    strcpy(yylval.codigo, yytext);
 
     return CADENA;
 }
@@ -1313,7 +1313,7 @@ YY_RULE_SETUP
     yylval.tipo = booleano;
     yylval.atrib = COD_TIPO_BOOLEANO;
 
-    yylval.codigo = malloc(sizeof(char));
+    yylval.codigo = malloc(2 * sizeof(char));
     if (strcmp(yytext, "cierto") == 0) strcpy(yylval.codigo, "1");
     else strcpy(yylval.codigo, "0");
     

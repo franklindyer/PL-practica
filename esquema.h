@@ -6,6 +6,8 @@
 #define SALIDA_ESQ "%s\nprintf(\"%s\\n\", %s);"
 #define SALIDAS_ESQ "%s\nprintf(\"%s \", %s);\n%s"
 #define WHILE_ESQ "%s: ; {\n%s\nif(!(%s)) goto %s;\n%s\n}\ngoto %s;\n%s: ;"
+#define IFELSE_ESQ "%s\nif(!(%s)) goto %s;\n%s\ngoto %s;\n%s: ;\n%s\n%s: ;"
+#define IF_ESQ "%s\nif(!(%s)) goto %s;\n%s\n%s: ;"
 
 enum dtipo;
 

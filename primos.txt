@@ -1,0 +1,23 @@
+principal {
+    def variables
+        entero n;
+        entero d;
+        entero p;
+        booleano div;
+    enddef variables
+
+    n = 100;
+    p = 2;
+
+    mientras (p < n) {
+        d = 2;
+        div = cierto;
+        mientras (d < p) {
+            div = div && (p % d != 0);
+            d = d + 1;
+        }
+        si (div)
+        entonces cout <<< p;
+        p = p + 1;
+    } 
+}

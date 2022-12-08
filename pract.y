@@ -267,7 +267,9 @@ Sentencia : bloque
           | sentencia_asignacion {
                 $$.codigo = $1.codigo;
             }
-          | sentencia_if
+          | sentencia_if {
+                $$.codigo = $1.codigo;
+            }
           | sentencia_while {
                 $$.codigo = $1.codigo;
             }
@@ -323,10 +325,29 @@ sentencia_asignacion : IDENTIFICADOR ASIGN expresion PYC {
 sentencia_if : NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia {
                     if ($3.tipo != booleano)
                             printf("(Línea %d) Error semántico: intento de usar condición no booleano en condicional\n", yylineno);
+
+                    char* etiq = etiqnuevo();
+                    $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen($3.tmp) + 2*strlen(etiq) + strlen($6.codigo) + 20));
+                    sprintf($$.codigo, IF_ESQ, $3.codigo, $3.tmp, etiq, $6.codigo, etiq);
+                    free(etiq);
+                    free($3.codigo);
+                    free($3.tmp);
+                    free($6.codigo);
                 }
              | NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia NOMB_ELSE Sentencia {
                     if ($3.tipo != booleano)
                             printf("(Línea %d) Error semántico: intento de usar condición no booleano en condicional\n", yylineno);
+
+                    char* etiq1 = etiqnuevo();
+                    char* etiq2 = etiqnuevo();
+                    $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen($3.tmp) + 2*strlen(etiq1) + 2*strlen(etiq1) + strlen($6.codigo) + strlen($8.codigo) + 50));
+                    sprintf($$.codigo, IFELSE_ESQ, $3.codigo, $3.tmp, etiq1, $6.codigo, etiq2, etiq1, $8.codigo, etiq2);
+                    free(etiq1);
+                    free(etiq2);
+                    free($3.codigo);
+                    free($3.tmp);
+                    free($6.codigo);
+                    free($8.codigo);
                 }
 ;
 
@@ -396,8 +417,8 @@ lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena {
                            | CADENA {
                                     $$.tipo = cadena;
 
-                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 21));
-                                    sprintf($$.codigo, "printf(%s); printf(\"\\n\")", $1.codigo);
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 30));
+                                    sprintf($$.codigo, "printf(%s); printf(\"\\n\");", $1.codigo);
                                     free($1.codigo);
                                 }
                            |
