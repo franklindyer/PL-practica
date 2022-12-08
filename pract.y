@@ -81,7 +81,7 @@ int main()
 %%
 
 Programa : CABECERA_PROGRAMA bloque {
-                $$.codigo = malloc(sizeof(char) * (strlen($2.codigo) + 100));
+                $$.codigo = malloc(sizeof(char) * (strlen($2.codigo) + 50));
                 sprintf($$.codigo, PROGRAMA_ESQ, $2.codigo);
                 escribir(fd, $$.codigo);
                 if (close(fd) < 0)
@@ -98,7 +98,7 @@ bloque : Inicio_de_bloque {
          Declar_de_subprogs 
          Sentencias 
          Fin_de_bloque { 
-                $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen($5.codigo) + 5));
+                $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen($5.codigo) + 8));
                 sprintf($$.codigo, BLOQUE_ESQ, $3.codigo, $5.codigo);
                 free($3.codigo);
                 free($5.codigo);
@@ -118,7 +118,7 @@ Declar_de_variables_locales : MARCA_INI_DECLAR_VARIABLES Variables_locales MARCA
                                     $$.codigo = $2.codigo;
                                 }
                             | {
-                                    $$.codigo = malloc(sizeof(char));
+                                    $$.codigo = malloc(2 * sizeof(char));
                                     *$$.codigo = '\n';
                                 }
 ;
@@ -143,14 +143,14 @@ Fin_de_bloque : LLAVDER
 Variables_locales : Variables_locales Cuerpo_declar_variables {
                             if (*$1.codigo == '\0') $$.codigo = $2.codigo;
                             else {
-                                $$.codigo = malloc(sizeof(char) * (1 + strlen($1.codigo) + strlen($2.codigo)));
+                                $$.codigo = malloc(sizeof(char) * (2 + strlen($1.codigo) + strlen($2.codigo)));
                                 sprintf($$.codigo, "%s\n%s", $1.codigo, $2.codigo);
                                 free($2.codigo);
                             }
                             free($1.codigo);
                         }
                   | {
-                        $$.codigo = malloc(sizeof(char));
+                        $$.codigo = malloc(2 * sizeof(char));
                         *$$.codigo = '\0';
                     }
 ;
@@ -206,7 +206,7 @@ Cuerpo_declar_variables : tipo {
                             } 
                           declar_identificadores 
                           PYC {
-                                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 2));
+                                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 3));
                                 sprintf($$.codigo, "%s %s;", $1.codigo, $3.codigo);
                                 free($1.codigo);
                                 free($3.codigo);
@@ -221,7 +221,7 @@ declar_identificadores : declar_identificadores COMA IDENTIFICADOR {
                                 if (TS_InsertaIDENT($3) == 1)
                                     printf("(Línea %d) Error semántico: variable local %s duplicado\n", yylineno, $3.lexema);
                                 
-                                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 1 + strlen($3.codigo)));
+                                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 2 + strlen($3.codigo)));
                                 sprintf($$.codigo, "%s,%s", $1.codigo, $3.codigo);
                                 free($1.codigo);
                                 free($3.codigo);
@@ -253,7 +253,7 @@ Sentencias : Sentencia Sentencias {
                     if (*$2.codigo == 0) {
                         $$.codigo = $1.codigo;
                     } else {
-                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + 1));
+                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + 3));
                         sprintf($$.codigo, "%s\n%s", $1.codigo, $2.codigo);
                     }
                 }
@@ -268,10 +268,14 @@ Sentencia : bloque
                 $$.codigo = $1.codigo;
             }
           | sentencia_if
-          | sentencia_while
+          | sentencia_while {
+                $$.codigo = $1.codigo;
+            }
           | sentencia_for
           | sentencia_entrada
-          | sentencia_salida
+          | sentencia_salida {
+                $$.codigo = $1.codigo;
+            }
           | llamada_proced
           | lista_sent
 ;
@@ -309,7 +313,7 @@ sentencia_asignacion : IDENTIFICADOR ASIGN expresion PYC {
 
                                 int n = TS_RecogerEntrada($1.lexema);
                                 char* id = TS[n].alias;
-                                $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen(id) + strlen($3.tmp) + 5));
+                                $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen(id) + strlen($3.tmp) + 6));
                                 sprintf($$.codigo, ASIGN_ESQ, $3.codigo, id, $3.tmp);
                                 free($3.tmp);
                                 free($3.codigo);
@@ -329,6 +333,16 @@ sentencia_if : NOMB_IF PARIZQ expresion PARDER NOMB_THEN Sentencia {
 sentencia_while : NOMB_WHILE PARIZQ expresion PARDER Sentencia {
                         if ($3.tipo != booleano)
                             printf("(Línea %d) Error semántico: intento de usar condición de fin de bucle no booleano\n", yylineno);
+
+                        char* etiq1 = etiqnuevo();
+                        char* etiq2 = etiqnuevo();
+                        $$.codigo = malloc(sizeof(char) * (strlen(etiq1) + 2*strlen(etiq2) + strlen($3.codigo) + strlen($3.tmp) + strlen($5.codigo) + 35));
+                        sprintf($$.codigo, WHILE_ESQ, etiq1, $3.codigo, $3.tmp, etiq2, $5.codigo, etiq1, etiq2);
+                        free(etiq1);
+                        free(etiq2);
+                        free($3.codigo);
+                        free($3.tmp);
+                        free($5.codigo);
                     }
 ;
 
@@ -341,24 +355,50 @@ sentencia_for : NOMB_FOR PARIZQ sentencia_asignacion expresion PYC Sentencia PAR
 sentencia_entrada : NOMB_ENTRADA lista_identificadores PYC
 ;
 
-sentencia_salida : NOMB_SALIDA lista_expresiones_o_cadena PYC
+sentencia_salida : NOMB_SALIDA lista_expresiones_o_cadena PYC {
+                        $$.codigo = $2.codigo;
+                    }
 ;
 
 lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena {
                                     if ($1.tipo != $3.tipo)
                                         printf("(Línea %d) Error semántico: lista de expresiones con tipos distintos\n", yylineno);
                                     $$.tipo = $1.tipo;
+
+                                    char* formato = getCadenaFormato($1.tipo);
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen(formato) + strlen($1.tmp) + strlen($3.codigo) + 21));
+                                    sprintf($$.codigo, SALIDAS_ESQ, $1.codigo, formato, $1.tmp, $3.codigo);
+                                    free(formato);
+                                    free($1.codigo);
+                                    free($3.codigo);
+                                    free($1.tmp);
                                 }
                            | CADENA COMA lista_expresiones_o_cadena {
                                     if ($3.tipo != cadena)
                                         printf("(Línea %d) Error semántico: lista de expresiones con tipos distintos\n", yylineno);
                                     $$.tipo = cadena;
+
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 11));
+                                    sprintf($$.codigo, "printf(%s);\n%s", $1.codigo, $3.codigo);
+                                    free($1.codigo);
+                                    free($3.codigo);
                                 }
                            | expresion {
                                     $$.tipo = $1.tipo;
+                                    
+                                    char* formato = getCadenaFormato($1.tipo);
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($1.tmp) + 21));
+                                    sprintf($$.codigo, SALIDA_ESQ, $1.codigo, formato, $1.tmp);
+                                    free(formato);
+                                    free($1.codigo);
+                                    free($1.tmp);
                                 }
                            | CADENA {
                                     $$.tipo = cadena;
+
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 21));
+                                    sprintf($$.codigo, "printf(%s); printf(\"\\n\")", $1.codigo);
+                                    free($1.codigo);
                                 }
                            |
 ;
@@ -467,7 +507,7 @@ expresion : PARIZQ expresion PARDER {
 
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 12));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_BINARIO_XOR expresion {
@@ -477,7 +517,7 @@ expresion : PARIZQ expresion PARDER {
 
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 12));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_BINARIO_ASTAST expresion {
@@ -497,6 +537,11 @@ expresion : PARIZQ expresion PARDER {
                             printf("(Línea %d) Error semántico: intento de negar un variable no numérico\n", yylineno);
                 }
                 $$.tipo = $2.tipo; 
+
+                $$.tmp = tmpnuevo();
+                char* tipo = getTipoNombre($$.tipo);
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.tmp) + 10));
+                sprintf($$.codigo, OPUN_ESQ, $2.codigo, tipo, $$.tmp, $$.tmp, $1.codigo, $2.tmp);
             }
           | expresion OP_UN_BIN expresion {
                 if ($1.tipo != $3.tipo)
@@ -509,7 +554,7 @@ expresion : PARIZQ expresion PARDER {
 
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 12));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
             }
           | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion {
@@ -533,19 +578,17 @@ expresion : PARIZQ expresion PARDER {
                     $$.esLista = entrada.esLista;
                 }
 
-                printf("pr1\n");
                 $$.codigo = malloc(sizeof(char));
-                $$.codigo = "";
+                *$$.codigo = '\0';
                 int n = TS_RecogerEntrada($1.lexema);
                 char* id = TS[n].alias;
-                $$.tmp = malloc(sizeof(char) * strlen(id));
+                $$.tmp = malloc(sizeof(char) * (strlen(id) + 1));
                 $$.tmp = strdup(id); 
-                printf("pr2\n");
             }
           | CONSTANTE {
                 $$.tipo = $1.tipo;
 
-                $$.codigo = malloc(sizeof(char));
+                $$.codigo = malloc(2 * sizeof(char));
                 *$$.codigo = 0;
                 $$.tmp = $1.codigo;
             }

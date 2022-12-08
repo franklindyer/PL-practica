@@ -910,8 +910,8 @@ YY_RULE_SETUP
     if (DEBUG) printf("Tipo primitivo: booleano\n");
     yylval.tipo = booleano;
 
-    yylval.codigo = malloc(sizeof(char) * 5);
-    strcpy(yylval.codigo, "short");
+    yylval.codigo = malloc(sizeof(char) * 3);
+    strcpy(yylval.codigo, "int");
 
     return TIPO_PRIM;
 }
@@ -1270,12 +1270,16 @@ YY_RULE_SETUP
     if (DEBUG) printf("Cadena: %s\n", yytext);
     yylval.tipo = cadena;
     yylval.atrib = COD_TIPO_CADENA;
+
+    yylval.codigo = malloc(sizeof(char) * strlen(yytext));
+    yylval.codigo = strdup(yytext);
+
     return CADENA;
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 376 "pract.l"
+#line 380 "pract.l"
 {
     if (DEBUG) printf("Constante entero: %s\n", yytext);
     yylval.tipo = entero;
@@ -1289,7 +1293,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 387 "pract.l"
+#line 391 "pract.l"
 {
     if (DEBUG) printf("Constante real: %s\n", yytext);
     yylval.tipo = real;
@@ -1303,7 +1307,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 398 "pract.l"
+#line 402 "pract.l"
 {
     if (DEBUG) printf("Constante booleano: %s\n", yytext);
     yylval.tipo = booleano;
@@ -1319,7 +1323,7 @@ YY_RULE_SETUP
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 410 "pract.l"
+#line 414 "pract.l"
 {
     if (DEBUG) printf("Constante caracter: %s\n", yytext);
     yylval.tipo = caracter;
@@ -1333,7 +1337,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 421 "pract.l"
+#line 425 "pract.l"
 {
     if (DEBUG) printf("Identificador: %s\n", yytext);
     yylval.lexema = strdup(yytext);
@@ -1342,7 +1346,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 429 "pract.l"
+#line 433 "pract.l"
 {
     if (DEBUG) printf("Parentesis izquierda\n");
     return PARIZQ;
@@ -1350,7 +1354,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 434 "pract.l"
+#line 438 "pract.l"
 {
     if (DEBUG) printf("Parentesis derecha\n");
     return PARDER;
@@ -1358,7 +1362,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 439 "pract.l"
+#line 443 "pract.l"
 {
     if (DEBUG) printf("Corchete izquierda\n");
     return CORIZQ;
@@ -1366,7 +1370,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 444 "pract.l"
+#line 448 "pract.l"
 {
     if (DEBUG) printf("Corchete derecha\n");
     return CORDER;
@@ -1374,7 +1378,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 449 "pract.l"
+#line 453 "pract.l"
 {
     if (DEBUG) printf("Llave izquierda\n");
     return LLAVIZQ;
@@ -1382,7 +1386,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 454 "pract.l"
+#line 458 "pract.l"
 {
     if (DEBUG) printf("Llave derecha\n");
     return LLAVDER;
@@ -1390,7 +1394,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 459 "pract.l"
+#line 463 "pract.l"
 {
     if (DEBUG) printf("Coma\n");
     return COMA;
@@ -1398,7 +1402,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 464 "pract.l"
+#line 468 "pract.l"
 {
     if (DEBUG) printf("Punto y coma\n");
     return PYC;
@@ -1406,7 +1410,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 469 "pract.l"
+#line 473 "pract.l"
 {
     if (DEBUG) printf("Asignación =\n");
     return ASIGN;
@@ -1415,27 +1419,27 @@ YY_RULE_SETUP
 case 57:
 /* rule 57 can match eol */
 YY_RULE_SETUP
-#line 474 "pract.l"
+#line 478 "pract.l"
 {yylineno++;};
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 475 "pract.l"
+#line 479 "pract.l"
 ;
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 477 "pract.l"
+#line 481 "pract.l"
 {
     printf("\n(Linea %d) Error léxico: token %s\n", yylineno, yytext);
 }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 481 "pract.l"
+#line 485 "pract.l"
 ECHO;
 	YY_BREAK
-#line 1439 "lex.yy.c"
+#line 1443 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2432,7 +2436,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 481 "pract.l"
+#line 485 "pract.l"
 
 
 

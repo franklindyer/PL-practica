@@ -110,8 +110,8 @@ OTROS .
     if (DEBUG) printf("Tipo primitivo: booleano\n");
     yylval.tipo = booleano;
 
-    yylval.codigo = malloc(sizeof(char) * 5);
-    strcpy(yylval.codigo, "short");
+    yylval.codigo = malloc(sizeof(char) * 3);
+    strcpy(yylval.codigo, "int");
 
     return TIPO_PRIM;
 }
@@ -370,6 +370,10 @@ OTROS .
     if (DEBUG) printf("Cadena: %s\n", yytext);
     yylval.tipo = cadena;
     yylval.atrib = COD_TIPO_CADENA;
+
+    yylval.codigo = malloc(sizeof(char) * strlen(yytext));
+    yylval.codigo = strdup(yytext);
+
     return CADENA;
 }
 

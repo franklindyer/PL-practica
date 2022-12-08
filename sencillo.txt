@@ -2,11 +2,35 @@ principal {
     def variables
         real x, y;
         real z;
+        entero f0, f1, n;
         booleano b;
     enddef variables
 
     x = 3.0;
     y = 4.0;
     z = (x + y)/2.0;
-    b = (z + 1) < (4.1 - 0.9)/5.5;
+
+    mientras (z > 1.0) {
+        z = z - 0.5;
+        cout <<< "z =", z;
+    }    
+
+    n = 20;
+    f1 = 1;
+    f0 = 0;
+    mientras (n > 0) {
+        def variables
+            entero tmp;
+        enddef variables
+        tmp = f1;
+        f1 = f0 + f1;
+        f0 = tmp;
+        n = n - 1;
+    }
+
+    cout <<< "fibooo ", f1; 
+
+    cout <<< x, y, z;
+
+    b = (z + 1.0) < (4.1 - 0.9)/5.5;
 }

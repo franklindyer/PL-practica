@@ -7,6 +7,7 @@ typedef struct atributos atribs;
 
 static int numvars = 0;
 static int numtmps = 0;
+static int numetiqs = 0;
 
 char* varnuevo() {
     char* nomb = malloc(sizeof(char) * MAX_NOMB_LEN);
@@ -19,6 +20,13 @@ char* tmpnuevo() {
     char* nomb = malloc(sizeof(char) * MAX_NOMB_LEN);
     sprintf(nomb, "t%d", numtmps);
     numtmps++;
+    return nomb;
+}
+
+char* etiqnuevo() {
+    char* nomb = malloc(sizeof(char) * (MAX_NOMB_LEN + 3));
+    sprintf(nomb, "etiq%d", numetiqs);
+    numetiqs++;
     return nomb;
 }
 
