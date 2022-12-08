@@ -8,6 +8,7 @@ typedef struct atributos atribs;
 static int numvars = 0;
 static int numtmps = 0;
 static int numetiqs = 0;
+static int numparams = 0;
 
 char* varnuevo() {
     char* nomb = malloc(sizeof(char) * MAX_NOMB_LEN);
@@ -28,6 +29,13 @@ char* etiqnuevo() {
     sprintf(nomb, "etiq%d", numetiqs);
     numetiqs++;
     return nomb;
+}
+
+char* paramnuevo() {
+    char* nomb = malloc(sizeof(char) * (MAX_NOMB_LEN + 1));
+    sprintf(nomb, "*p%d", numparams);
+    numparams++;
+    return nomb; 
 }
 
 void escribir(int fd, char* texto) {

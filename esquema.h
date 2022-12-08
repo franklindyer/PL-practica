@@ -1,5 +1,5 @@
 #define PROGRAMA_ESQ "#include <stdio.h>\n\nint main() {\n%s\nreturn 0;\n}"
-#define BLOQUE_ESQ "{\n%s\n%s\n}"
+#define BLOQUE_ESQ "{\n%s\n%s\n%s\n}"
 #define ASIGN_ESQ "%s\n%s = %s;"
 #define OPUN_ESQ "%s\n%s %s;\n%s = %s %s;"
 #define OPBIN_ESQ "%s\n%s\n%s %s;\n%s = %s %s %s;"
@@ -11,6 +11,7 @@
 #define IFELSE_ESQ "%s\nif(!(%s)) goto %s;\n%s\ngoto %s;\n%s: ;\n%s\n%s: ;"
 #define IF_ESQ "%s\nif(!(%s)) goto %s;\n%s\n%s: ;"
 #define FOR_ESQ "%s\n%s: ;\n%s\nif(!%s) goto %s;\n%s\n%s\ngoto %s;\n%s: ;"
+#define PROCED_ESQ "void %s(%s)"
 
 enum dtipo;
 

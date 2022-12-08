@@ -99,26 +99,46 @@ bloque : Inicio_de_bloque {
                 }
             } 
          Declar_de_variables_locales 
-         Declar_de_subprogs 
+         Declar_de_subprogs
          Sentencias 
          Fin_de_bloque { 
                 TS_QuitarHastaMarca();
 
                 if (!err) {
-                $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen($5.codigo) + 8));
-                sprintf($$.codigo, BLOQUE_ESQ, $3.codigo, $5.codigo);
+                $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen($4.codigo) + strlen($5.codigo) + 10));
+                sprintf($$.codigo, BLOQUE_ESQ, $3.codigo, $4.codigo, $5.codigo);
                 free($3.codigo);
+                free($4.codigo);
                 free($5.codigo);
                 }
             }
 ;
 
-Declar_de_subprogs : Declar_de_subprogs Declar_subprog
-                   |
+Declar_de_subprogs : Declar_de_subprogs Declar_subprog {
+                        if (!err) {
+                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + 3));
+                        sprintf($$.codigo, "%s\n\n%s", $1.codigo, $2.codigo);
+                        free($1.codigo);
+                        free($2.codigo);
+                        }
+                    }
+                   | {
+                        if (!err) {
+                        $$.codigo = malloc(sizeof(char));
+                        *$$.codigo = 0;
+                        }
+                    }
 ;
 
 Declar_subprog : Cabecera_subprograma  { Subprog = 1; }
-                 bloque                { Subprog = 0; }
+                 bloque                { Subprog = 0; 
+                        if (!err) {
+                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 2));
+                        sprintf($$.codigo, "%s\n%s", $1.codigo, $3.codigo);
+                        free($1.codigo);
+                        free($3.codigo);
+                        }
+                    }
 ;
 
 Declar_de_variables_locales : MARCA_INI_DECLAR_VARIABLES Variables_locales MARCA_FIN_DECLAR_VARIABLES {
@@ -137,9 +157,16 @@ Cabecera_subprograma : SUBPROG_CLAVE
                             TS_InsertaSUBPROG($2);
                         }
                        PARIZQ 
-                       lista_argumentos 
+                       lista_parametros
                        PARDER {
                             TS_AsignarParams($2.lexema, $5.parametros);
+
+                            if (!err) {
+                            $$.codigo = malloc(sizeof(char) * (strlen($2.codigo) + strlen($5.codigo) + 10));
+                            sprintf($$.codigo, PROCED_ESQ, $2.codigo, $5.codigo);
+                            free($2.codigo);
+                            free($5.codigo);
+                            }
                         }
 ;
 
@@ -168,15 +195,32 @@ Variables_locales : Variables_locales Cuerpo_declar_variables {
                     }
 ;
 
-lista_argumentos : lista_argumentos COMA tipo IDENTIFICADOR {
+lista_parametros : lista_parametros COMA tipo IDENTIFICADOR {
                         $$.parametros = $1.parametros + 1;
                         $4.tipo = $3.tipo;
+                        $4.codigo = paramnuevo();
                         TS_InsertaPARAMF($4);
+
+                        if (!err) {
+                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen($4.codigo) + 4));
+                        sprintf($$.codigo, "%s, %s %s", $1.codigo, $3.codigo, $4.codigo);
+                        free($1.codigo);
+                        free($3.codigo);
+                        free($4.codigo);
+                        }
                     }
                  | tipo IDENTIFICADOR {
                         $$.parametros = 1;
                         $2.tipo = $1.tipo;
+                        $2.codigo = paramnuevo();
                         TS_InsertaPARAMF($2);
+
+                        if (!err) {
+                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + 2));
+                        sprintf($$.codigo, "%s %s", $1.codigo, $2.codigo);
+                        free($1.codigo);
+                        free($2.codigo);
+                        }
                     }
                  |
                  | error

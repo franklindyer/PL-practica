@@ -86,6 +86,7 @@ void TS_InsertaPARAMF(atributos atrib) {
     entradaTS nuevo;
     nuevo.entrada = parametro_formal;
     nuevo.nombre = strdup(atrib.lexema);
+    nuevo.alias = strdup(atrib.codigo);
     nuevo.tipoDato = atrib.tipo;
     nuevo.esLista = atrib.esLista;
 
@@ -103,6 +104,7 @@ void TS_CopiarParams() {
         nuevo.entrada = variable;
         nuevo.nombre = viejo.nombre;
         nuevo.tipoDato = viejo.tipoDato;
+        nuevo.alias = viejo.alias;
         nuevo.esLista = viejo.esLista;        
 
         TS[TOPE] = nuevo;
