@@ -1,0 +1,16 @@
+principal {
+    def variables
+        entero n;
+        entero p;
+    enddef variables
+
+    cin >>> n;
+    cout <<< "Factores de ", n, ":";
+    
+    mientras (n > 1) {
+        p = 2;
+        mientras (n % p != 0) p = p + 1;
+        n = n/p;
+        cout <<< p;
+    }
+}

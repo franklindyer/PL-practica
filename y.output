@@ -42,7 +42,7 @@ Grammar
    18                 | /* empty */
    19                 | error
 
-   20 lista_identificadores: lista_identificadores COMA IDENTIFICADOR
+   20 lista_identificadores: IDENTIFICADOR COMA lista_identificadores
    21                      | IDENTIFICADOR
    22                      | error
 
@@ -681,18 +681,19 @@ state 45
 
 state 46
 
-   21 lista_identificadores: IDENTIFICADOR .
+   20 lista_identificadores: IDENTIFICADOR . COMA lista_identificadores
+   21                      | IDENTIFICADOR .
+
+    COMA  shift, and go to state 74
 
     $default  reduce using rule 21 (lista_identificadores)
 
 
 state 47
 
-   20 lista_identificadores: lista_identificadores . COMA IDENTIFICADOR
    52 sentencia_entrada: NOMB_ENTRADA lista_identificadores . PYC
 
-    COMA  shift, and go to state 74
-    PYC   shift, and go to state 75
+    PYC  shift, and go to state 75
 
 
 state 48
@@ -1016,9 +1017,12 @@ state 73
 
 state 74
 
-   20 lista_identificadores: lista_identificadores COMA . IDENTIFICADOR
+   20 lista_identificadores: IDENTIFICADOR COMA . lista_identificadores
 
-    IDENTIFICADOR  shift, and go to state 104
+    error          shift, and go to state 45
+    IDENTIFICADOR  shift, and go to state 46
+
+    lista_identificadores  go to state 104
 
 
 state 75
@@ -1460,7 +1464,7 @@ state 103
 
 state 104
 
-   20 lista_identificadores: lista_identificadores COMA IDENTIFICADOR .
+   20 lista_identificadores: IDENTIFICADOR COMA lista_identificadores .
 
     $default  reduce using rule 20 (lista_identificadores)
 

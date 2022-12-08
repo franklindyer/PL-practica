@@ -3,21 +3,22 @@ principal {
         entero n;
         entero d;
         entero p;
+        caracter c;
         booleano div;
     enddef variables
 
-    n = 100;
+    cin >>> n, c;
     p = 2;
 
     mientras (p < n) {
         d = 2;
-        div = cierto;
-        mientras (d < p) {
+        div = cier~~~to;
+        mientras (d < pig) {
             div = div && (p % d != 0);
             d = d + 1;
         }
         si (div)
-        entonces cout <<< p;
-        p = p + 1;
+        entonces cout <<< c, p;
+        p = p + falso;
     } 
 }

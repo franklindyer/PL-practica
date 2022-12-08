@@ -3,11 +3,14 @@
 #define ASIGN_ESQ "%s\n%s = %s;"
 #define OPUN_ESQ "%s\n%s %s;\n%s = %s %s;"
 #define OPBIN_ESQ "%s\n%s\n%s %s;\n%s = %s %s %s;"
+#define ENTRADA_ESQ "scanf(\"%s\", &%s);"
+#define ENTRADAS_ESQ "scanf(\"%s\\n\", &%s);\n%s"
 #define SALIDA_ESQ "%s\nprintf(\"%s\\n\", %s);"
 #define SALIDAS_ESQ "%s\nprintf(\"%s \", %s);\n%s"
 #define WHILE_ESQ "%s: ; {\n%s\nif(!(%s)) goto %s;\n%s\n}\ngoto %s;\n%s: ;"
 #define IFELSE_ESQ "%s\nif(!(%s)) goto %s;\n%s\ngoto %s;\n%s: ;\n%s\n%s: ;"
 #define IF_ESQ "%s\nif(!(%s)) goto %s;\n%s\n%s: ;"
+#define FOR_ESQ "%s\n%s: ;\n%s\nif(!%s) goto %s;\n%s\n%s\ngoto %s;\n%s: ;"
 
 enum dtipo;
 
