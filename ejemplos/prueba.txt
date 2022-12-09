@@ -1,0 +1,30 @@
+principal {
+    def variables
+        entero i, tmp;
+        entero n, f0, f1;
+        entero suma, producto;
+    enddef variables
+
+    cout <<< "Ingresar un número--->:";
+    cin >>> n;
+
+    i = 0;
+    f0 = 0;
+    f1 = 1;
+    suma = 0;
+    producto = 1;
+
+    mientras (i < n) {
+        suma = suma + f1;
+        producto = producto * f1;
+        cout <<< f1;
+
+        tmp = f1;
+        f1 = f0 + f1;
+        f0 = tmp;
+        i = i + 1;
+    }
+
+    cout <<< "Suma: ", suma;
+    cout <<< "Producto: ", producto;
+}

@@ -527,7 +527,7 @@ sentencia_for : NOMB_FOR PARIZQ sentencia_asignacion expresion PYC Sentencia PAR
                         if (!err) {
                         char* etiq1 = etiqnuevo();
                         char* etiq2 = etiqnuevo();
-                        $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + 2*strlen(etiq1) + 2*strlen(etiq2) + strlen($4.codigo) + strlen($4.tmp) + strlen($8.codigo) + strlen($6.codigo) + 30));
+                        $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + 2*strlen(etiq1) + 2*strlen(etiq2) + strlen($4.codigo) + strlen($4.tmp) + strlen($8.codigo) + strlen($6.codigo) + 40));
                         sprintf($$.codigo, FOR_ESQ, $3.codigo, etiq1, $4.codigo, $4.tmp, etiq2, $8.codigo, $6.codigo, etiq1, etiq2);
                         free($3.codigo);
                         free($4.codigo);
@@ -676,7 +676,7 @@ expresion : PARIZQ expresion PARDER {
                 if (!err) {
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 11));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
                 }
             }
@@ -691,7 +691,7 @@ expresion : PARIZQ expresion PARDER {
                 if (!err) {
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 11));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
                 }
             }
@@ -712,7 +712,7 @@ expresion : PARIZQ expresion PARDER {
                 if (!err) {
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 11));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
                 }
             }
@@ -727,7 +727,7 @@ expresion : PARIZQ expresion PARDER {
                 if (!err) {
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 11));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 11));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
                 }
             }
@@ -742,7 +742,7 @@ expresion : PARIZQ expresion PARDER {
                 if (!err) {
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 12));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 12));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
                 }
             }
@@ -757,7 +757,7 @@ expresion : PARIZQ expresion PARDER {
                 if (!err) {
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 12));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 12));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
                 }
             }
@@ -809,7 +809,7 @@ expresion : PARIZQ expresion PARDER {
                 if (!err) {
                 $$.tmp = tmpnuevo();
                 char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + + strlen($1.tmp) + strlen($3.tmp) + 12));
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 12));
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
                 }
             }

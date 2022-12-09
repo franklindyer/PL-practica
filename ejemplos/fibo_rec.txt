@@ -1,0 +1,5 @@
+principal {
+    def variables
+        in
+    enddef variables
+}

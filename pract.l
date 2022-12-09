@@ -3,7 +3,7 @@
 #include "codigos.h"
 #include "tabla_structs.c"
 #include "y.tab.h"
-#define DEBUG 1
+#define DEBUG 0
 
 #define YYSTYPE atributos
 %}
@@ -382,7 +382,7 @@ OTROS .
     yylval.tipo = entero;
     yylval.atrib = COD_TIPO_ENTERO;
 
-    yylval.codigo = malloc(sizeof(char) * 20);
+    yylval.codigo = malloc(sizeof(char) * (strlen(yytext) + 2));
     sprintf(yylval.codigo, "%d",(int)strtol(yytext, NULL, 10));
     
     return CONSTANTE;
