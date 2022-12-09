@@ -154,6 +154,7 @@ Declar_de_variables_locales : MARCA_INI_DECLAR_VARIABLES Variables_locales MARCA
 
 Cabecera_subprograma : SUBPROG_CLAVE 
                        IDENTIFICADOR {
+                            $2.codigo = procnuevo();
                             TS_InsertaSUBPROG($2);
                         }
                        PARIZQ 
@@ -260,16 +261,26 @@ lista_identificadores : IDENTIFICADOR COMA lista_identificadores {
                       | error
 ;
 
-lista_expresiones : lista_expresiones COMA expresion {
+lista_argumentos : lista_argumentos COMA IDENTIFICADOR {
                             $$.parametros = $1.parametros + 1;
                             $3.parametros = $1.parametros + 1;
-                            $3.lexema = $1.lexema;
+                            $3.tipo = $1.tipo;
                             if (TS_ComprobarTipoParamf($3.lexema, $3.parametros, $3.tipo) == 0) {
                                 printf("(Línea %d) Error semántico: argumento %d a procedimiento %s tiene tipo incorrecto\n", yylineno, $3.parametros, $3.lexema);
                                 err = 1;
                             }
+
+                            if (!err) {
+                            int n = TS_RecogerEntrada($3.lexema);
+                            char* id = TS[n].alias;
+                            $3.codigo = id;
+                            $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 4));
+                            sprintf($$.codigo, "%s, &%s", $1.codigo, $3.codigo);
+                            free($1.codigo);
+                            // free($3.codigo);
+                            }
                         }
-                  | expresion {
+                  | IDENTIFICADOR {
                             $$.parametros = 1;
                             $1.parametros = 1;
                             $1.lexema = $$.lexema;
@@ -278,6 +289,13 @@ lista_expresiones : lista_expresiones COMA expresion {
                                 err = 1;
                             }
                             
+                            if (!err) {
+                            int n = TS_RecogerEntrada($1.lexema);
+                            char* id = TS[n].alias;
+                            $1.codigo = id;
+                            $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 2));
+                            sprintf($$.codigo, "&%s", $1.codigo);
+                            }
                         }
                   | 
 ;
@@ -378,7 +396,9 @@ Sentencia : bloque {
           | sentencia_salida {
                 if (!err) $$.codigo = $1.codigo;
             }
-          | llamada_proced
+          | llamada_proced {
+                if (!err) $$.codigo = $1.codigo;
+            }
           | lista_sent
 ;
 
@@ -396,7 +416,7 @@ lista_sent : IDENTIFICADOR LISTA_UNARIO_POSTFIJO PYC {
                 }
 ;
 
-llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC {
+llamada_proced : IDENTIFICADOR PARIZQ lista_argumentos PARDER PYC {
                         int n = TS_RecogerProced($1.lexema);
                         if (n == -1) {
                             printf("(Línea %d) Error semántico: llamada a procedimiento que no existe\n", yylineno);
@@ -409,6 +429,13 @@ llamada_proced : IDENTIFICADOR PARIZQ lista_expresiones PARDER PYC {
                             }
                         }
                         $3.lexema = $1.lexema;
+
+                        if (!err) {
+                        char* handle = TS[n].alias;
+                        $$.codigo = malloc(sizeof(char) * (4 + strlen(handle) + strlen($3.codigo)));
+                        sprintf($$.codigo, "%s(%s);", handle, $3.codigo);
+                        free($3.codigo); 
+                        }
                     }
 ;
 

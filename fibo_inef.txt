@@ -1,6 +1,7 @@
 principal {
     def variables
         entero n;
+        entero f0, f1;
     enddef variables
 
     proced fibo(entero f0, entero f1, entero n) {
@@ -12,4 +13,11 @@ principal {
             f0 = f1 - f0;
         }
     }
+
+    f0 = 1;
+    f1 = 1;
+    n = 20;
+    fibo(f0, f1, n);
+    cout <<< n;
+    cout <<< f1;
 }

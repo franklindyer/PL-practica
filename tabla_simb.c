@@ -73,6 +73,7 @@ void TS_InsertaSUBPROG(atributos atrib) {
     entradaTS nuevo;
     nuevo.entrada = procedimiento;
     nuevo.nombre = strdup(atrib.lexema);
+    nuevo.alias = strdup(atrib.codigo);
     nuevo.tipoDato = no_asignado;
     nuevo.parametros = atrib.parametros;
     nuevo.esLista = 0;
@@ -177,5 +178,5 @@ int TS_AsignarParams(char* nombre, unsigned int params) {
 
 int TS_ComprobarTipoParamf(char* proced, int numarg, dtipo tipo) {
     int n = TS_RecogerProced(proced);
-    return (TS[n + numarg].tipoDato == tipo);
+    return (TS[n + numarg + 1].tipoDato == tipo);
 }

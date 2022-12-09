@@ -9,6 +9,7 @@ static int numvars = 0;
 static int numtmps = 0;
 static int numetiqs = 0;
 static int numparams = 0;
+static int numprocs = 0;
 
 char* varnuevo() {
     char* nomb = malloc(sizeof(char) * MAX_NOMB_LEN);
@@ -35,6 +36,13 @@ char* paramnuevo() {
     char* nomb = malloc(sizeof(char) * (MAX_NOMB_LEN + 1));
     sprintf(nomb, "*p%d", numparams);
     numparams++;
+    return nomb; 
+}
+
+char* procnuevo() {
+    char* nomb = malloc(sizeof(char) * (MAX_NOMB_LEN + 4));
+    sprintf(nomb, "proc%d", numprocs);
+    numprocs++;
     return nomb; 
 }
 
