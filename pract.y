@@ -565,7 +565,7 @@ lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena {
                                     $$.tipo = cadena;
 
                                     if (!err) {
-                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 11));
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 12));
                                     sprintf($$.codigo, "printf(%s);\n%s", $1.codigo, $3.codigo);
                                     free($1.codigo);
                                     free($3.codigo);
