@@ -1,0 +1,34 @@
+principal {
+    def variables
+        real approx;
+        real x;
+        entero terms;
+    enddef variables
+
+    proced expo(real x, entero n, real val) {
+        def variables
+            real term;
+            entero i;
+            real k;
+        enddef variables
+
+        term = 1.0;
+        val = 1.0;
+        k = 1.0;        
+
+        para (i = 0; i < n; i = i + 1;) {
+            term = term * (x/k);
+            val = val + term;
+            k = k + 1.0;
+        }
+    }
+
+    approx = 0.0;
+    terms = 10;
+    x = 1.0;
+    expo(x, terms, approx);
+    cout <<< approx;
+    x = 2.0;
+    expo(x, terms, approx);
+    cout <<< approx;
+}

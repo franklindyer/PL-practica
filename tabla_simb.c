@@ -178,5 +178,5 @@ int TS_AsignarParams(char* nombre, unsigned int params) {
 
 int TS_ComprobarTipoParamf(char* proced, int numarg, dtipo tipo) {
     int n = TS_RecogerProced(proced);
-    return (TS[n + numarg + 1].tipoDato == tipo);
+    return (TS[n + numarg].tipoDato == tipo);
 }

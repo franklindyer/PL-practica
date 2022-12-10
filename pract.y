@@ -13,6 +13,7 @@
 
 int yylineno;
 int fd;
+char* nombProced;
 int err;
 
 int yylex();
@@ -264,14 +265,13 @@ lista_identificadores : IDENTIFICADOR COMA lista_identificadores {
 lista_argumentos : lista_argumentos COMA IDENTIFICADOR {
                             $$.parametros = $1.parametros + 1;
                             $3.parametros = $1.parametros + 1;
-                            $3.tipo = $1.tipo;
-                            if (TS_ComprobarTipoParamf($3.lexema, $3.parametros, $3.tipo) == 0) {
+                            int n = TS_RecogerEntrada($3.lexema);
+                            if (TS_ComprobarTipoParamf(nombProced, $3.parametros, TS[n].tipoDato) == 0) {
                                 printf("(Línea %d) Error semántico: argumento %d a procedimiento %s tiene tipo incorrecto\n", yylineno, $3.parametros, $3.lexema);
                                 err = 1;
                             }
 
                             if (!err) {
-                            int n = TS_RecogerEntrada($3.lexema);
                             char* id = TS[n].alias;
                             $3.codigo = id;
                             $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 4));
@@ -283,14 +283,13 @@ lista_argumentos : lista_argumentos COMA IDENTIFICADOR {
                   | IDENTIFICADOR {
                             $$.parametros = 1;
                             $1.parametros = 1;
-                            $1.lexema = $$.lexema;
-                            if (TS_ComprobarTipoParamf($1.lexema, $1.parametros, $1.tipo) == 0) {
+                            int n = TS_RecogerEntrada($1.lexema);
+                            if (TS_ComprobarTipoParamf(nombProced, $1.parametros, TS[n].tipoDato) == 0) {
                                 printf("(Línea %d) Error semántico: argumento %d a procedimiento %s tiene tipo incorrecto\n", yylineno, $1.parametros, $1.lexema);
                                 err = 1;
                             }
                             
                             if (!err) {
-                            int n = TS_RecogerEntrada($1.lexema);
                             char* id = TS[n].alias;
                             $1.codigo = id;
                             $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 2));
@@ -354,10 +353,10 @@ declar_identificadores : declar_identificadores COMA IDENTIFICADOR {
                                     $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen(tipo) + 20));
                                     sprintf($$.codigo, DECLARLISTA_ESQ, $1.codigo, tipo);
                                     free(tipo);
+                                    free($1.codigo);
                                 } else { 
                                    $$.codigo = $1.codigo;
                                 }
-                                free($1.codigo);
                                 }
                             }
 ;
@@ -456,25 +455,25 @@ lista_sent : IDENTIFICADOR LISTA_UNARIO_POSTFIJO PYC {
                 }
 ;
 
-llamada_proced : IDENTIFICADOR PARIZQ lista_argumentos PARDER PYC {
+llamada_proced : IDENTIFICADOR PARIZQ {nombProced = $1.lexema;} lista_argumentos PARDER PYC {
                         int n = TS_RecogerProced($1.lexema);
                         if (n == -1) {
                             printf("(Línea %d) Error semántico: llamada a procedimiento que no existe\n", yylineno);
                             err = 1;
                         } else {
                             unsigned int params = TS[n].parametros;
-                            if (params != $3.parametros) {
+                            if (params != $4.parametros) {
                                 printf("(Línea %d) Error semántico: procedimiento espera %d argumentos\n", yylineno, params);
                                 err = 1;
                             }
                         }
-                        $3.lexema = $1.lexema;
+                        $4.lexema = $1.lexema;
 
                         if (!err) {
                         char* handle = TS[n].alias;
-                        $$.codigo = malloc(sizeof(char) * (4 + strlen(handle) + strlen($3.codigo)));
-                        sprintf($$.codigo, "%s(%s);", handle, $3.codigo);
-                        free($3.codigo); 
+                        $$.codigo = malloc(sizeof(char) * (4 + strlen(handle) + strlen($4.codigo)));
+                        sprintf($$.codigo, "%s(%s);", handle, $4.codigo);
+                        free($4.codigo); 
                         }
                     }
 ;
@@ -718,6 +717,26 @@ expresion : PARIZQ expresion PARDER {
                 }
 
                 switch ($2.atrib) {
+                    case OPBIN_MULT_PART :
+                        $$.tipo = $1.tipo;
+
+                        if (!err) {
+                        if ($$.esLista) {
+                            
+                        } else {
+                            char* tipo = getTipoNombre($$.tipo);
+                            $$.tmp = tmpnuevo();
+                            $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + strlen($$.tmp) + strlen($1.tmp) + strlen($3.tmp) + 15));
+                            sprintf($$.codigo, "%s\n%s\n%s %s = %s / %s;", $1.codigo, $3.codigo, tipo, $$.tmp, $1.tmp, $3.tmp);
+                            free($1.codigo);
+                            free($3.codigo);
+                            free($1.tmp);
+                            free($3.tmp);
+                            free(tipo);
+                        }
+                        }
+                        break;
+
                     case OPBIN_MULT_MOD :
                         if ($3.tipo != entero) {
                             printf("(Línea %d) Error semántico: sólo se puede calcular el módulo por un entero\n", yylineno);
@@ -764,6 +783,22 @@ expresion : PARIZQ expresion PARDER {
                         $$.tipo = entero;
                         if ($1.tipo == real || $3.tipo == real) $$.tipo = real;
                         $$.esLista = $1.esLista || $3.esLista;
+                        
+                        if (!err) {
+                        if ($$.esLista) {
+                            
+                        } else {
+                            char* tipo = getTipoNombre($$.tipo);
+                            $$.tmp = tmpnuevo();
+                            $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + strlen($$.tmp) + strlen($1.tmp) + strlen($3.tmp) + 15));
+                            sprintf($$.codigo, "%s\n%s\n%s %s = %s * %s;", $1.codigo, $3.codigo, tipo, $$.tmp, $1.tmp, $3.tmp);
+                            free($1.codigo);
+                            free($3.codigo);
+                            free($1.tmp);
+                            free($3.tmp);
+                            free(tipo);
+                        }
+                        }
                         break;
 
                     default:
