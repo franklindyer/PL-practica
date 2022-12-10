@@ -66,6 +66,7 @@ int main()
 
 %left NOMB_WHILE NOMB_FOR
 
+%right OP_TERN_SEG
 %left OP_BINARIO_OR_LOG
 %left OP_BINARIO_AND_LOG
 %left OP_BINARIO_XOR
@@ -77,7 +78,6 @@ int main()
 %left OP_BINARIO_MULT
 %right OP_UNARIO
 %left OP_TERN_PRIM_UN 
-%left OP_TERN_SEG
 
 
 %%
@@ -147,7 +147,7 @@ Declar_de_variables_locales : MARCA_INI_DECLAR_VARIABLES Variables_locales MARCA
                             | {
                                     if (!err) {
                                     $$.codigo = malloc(2 * sizeof(char));
-                                    *$$.codigo = '\n';
+                                    *$$.codigo = 0;
                                     }
                                 }
 ;
@@ -325,9 +325,16 @@ declar_identificadores : declar_identificadores COMA IDENTIFICADOR {
                                     err = 1;
                                 }
                                 
-                                if (!err) { 
-                                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 2 + strlen($3.codigo)));
-                                sprintf($$.codigo, "%s,%s", $1.codigo, $3.codigo);
+                                if (!err) {
+                                if (esListaTmp) {
+                                    char* tipo = getTipoNombre($3.tipo);
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 20));
+                                    sprintf($$.codigo, DECLARLISTAS_ESQ, $1.codigo, $3.codigo, tipo);
+                                    free(tipo);
+                                } else { 
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + 2 + strlen($3.codigo)));
+                                    sprintf($$.codigo, "%s,%s", $1.codigo, $3.codigo);
+                                }
                                 free($1.codigo);
                                 free($3.codigo);
                                 }
@@ -341,7 +348,17 @@ declar_identificadores : declar_identificadores COMA IDENTIFICADOR {
                                     err = 1;
                                 }
                                 
-                                if (!err) $$.codigo = $1.codigo;
+                                if (!err) { 
+                                if (esListaTmp) {
+                                    char* tipo = getTipoNombre($1.tipo);
+                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen(tipo) + 20));
+                                    sprintf($$.codigo, DECLARLISTA_ESQ, $1.codigo, tipo);
+                                    free(tipo);
+                                } else { 
+                                   $$.codigo = $1.codigo;
+                                }
+                                free($1.codigo);
+                                }
                             }
 ;
 
@@ -354,6 +371,11 @@ tipo : TIPO_PRIM {
      | TIPO_LISTA TIPO_PRIM { 
             $$.tipo = $2.tipo; 
             $$.esLista = 1;
+
+            if (!err) {
+            $$.codigo = malloc(sizeof(char) * 9);
+            sprintf($$.codigo, "lgestor");
+            }
         }
 ;
 
@@ -399,7 +421,9 @@ Sentencia : bloque {
           | llamada_proced {
                 if (!err) $$.codigo = $1.codigo;
             }
-          | lista_sent
+          | lista_sent {
+                if (!err) $$.codigo = $1.codigo;
+            }
 ;
 
 lista_sent : IDENTIFICADOR LISTA_UNARIO_POSTFIJO PYC {
@@ -407,11 +431,27 @@ lista_sent : IDENTIFICADOR LISTA_UNARIO_POSTFIJO PYC {
                         printf("(Línea %d) Error semántico: intento de realizar operación de listas en algo que no sea lista\n", yylineno);
                         err = 1;
                     }
+
+                    if (!err) {
+                    int n = TS_RecogerEntrada($1.lexema);
+                    char* nomb = TS[n].alias;
+                    $$.codigo = malloc(sizeof(char) * (strlen(nomb) + 25));
+                    if ($2.atrib == OPLISTA_IZQ)
+                        sprintf($$.codigo, "retroceder_puntero(%s);", nomb);
+                    if ($2.atrib == OPLISTA_DER) {
+                        sprintf($$.codigo, "avanzar_puntero(%s);", nomb);
+                    }
+                    }
                 }
            | LISTA_UNARIO_PREFIJO IDENTIFICADOR PYC {
                     if ($2.esLista != 1) {
                         printf("(Línea %d) Error semántico: intento de realizar operación de listas en algo que no sea lista\n", yylineno);
                         err = 1;
+                    }
+
+                    if (!err) {
+                    $$.codigo = malloc(sizeof(char) * (strlen($2.tmp) + 25));
+                    sprintf($$.codigo, "comienzo_puntero(%s);", $2.tmp);
                     }
                 }
 ;
@@ -552,13 +592,18 @@ lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena {
                                     $$.tipo = $1.tipo;
 
                                     if (!err) {
-                                    char* formato = getCadenaFormato($1.tipo);
-                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen(formato) + strlen($1.tmp) + strlen($3.codigo) + 21));
-                                    sprintf($$.codigo, SALIDAS_ESQ, $1.codigo, formato, $1.tmp, $3.codigo);
-                                    free(formato);
-                                    free($1.codigo);
-                                    free($3.codigo);
-                                    free($1.tmp);
+                                    if ($1.esLista) {
+                                        $$.codigo = malloc(sizeof(char) * (strlen($3.codigo) + strlen($1.tmp) + strlen($1.codigo) + 40));
+                                        sprintf($$.codigo, SALIDASLISTA_ESQ, $1.codigo, $1.tmp, $3.codigo);
+                                    } else {
+                                        char* formato = getCadenaFormato($1.tipo);
+                                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen(formato) + strlen($1.tmp) + strlen($3.codigo) + 21));
+                                        sprintf($$.codigo, SALIDAS_ESQ, $1.codigo, formato, $1.tmp, $3.codigo);
+                                        free(formato);
+                                        free($1.codigo);
+                                        free($3.codigo);
+                                        free($1.tmp);
+                                    }
                                     }
                                 }
                            | CADENA COMA lista_expresiones_o_cadena {
@@ -574,11 +619,16 @@ lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena {
                            | expresion {
                                     $$.tipo = $1.tipo;
                                    
-                                    if (!err) { 
-                                    char* formato = getCadenaFormato($1.tipo);
-                                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($1.tmp) + 21));
-                                    sprintf($$.codigo, SALIDA_ESQ, $1.codigo, formato, $1.tmp);
-                                    free(formato);
+                                    if (!err) {
+                                    if ($1.esLista) {
+                                        $$.codigo = malloc(sizeof(char) * (strlen($1.tmp) + strlen($1.codigo) + 40));
+                                        sprintf($$.codigo, SALIDALISTA_ESQ, $1.codigo, $1.tmp);
+                                    } else {
+                                        char* formato = getCadenaFormato($1.tipo);
+                                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($1.tmp) + 21));
+                                        sprintf($$.codigo, SALIDA_ESQ, $1.codigo, formato, $1.tmp);
+                                        free(formato);
+                                    }
                                     free($1.codigo);
                                     free($1.tmp);
                                     }
@@ -618,8 +668,17 @@ expresion : PARIZQ expresion PARDER {
                             printf("(Línea %d) Error semántico: sólo se puede calcular el número de elementos de una lista\n", yylineno);
                             err = 1;
                         }
-
                         $$.tipo = entero;
+                        $$.esLista = 0;
+
+                        if (!err) {
+                        $$.tmp = tmpnuevo();
+                        $$.codigo = malloc(sizeof(char) * (strlen($2.codigo) + 2*strlen($$.tmp) + strlen($2.tmp) + 25));
+                        sprintf($$.codigo, "%s\nint %s;\n%s = %s->largo;", $2.codigo, $$.tmp, $$.tmp, $2.tmp);
+                        free($2.codigo);
+                        free($2.tmp);
+                        }
+
                         break;
 
                     case OPUN_INTER :
@@ -627,35 +686,70 @@ expresion : PARIZQ expresion PARDER {
                             printf("(Línea %d) Error semántico: sólo se puede coger elementos de una lista\n", yylineno);
                             err = 1;
                         }
-
                         $$.tipo = $2.tipo;
+                        $$.esLista = 0;
+
+                        if (!err) {
+                        char* tipo = getTipoNombre($$.tipo);
+                        $$.tmp = tmpnuevo();
+                        $$.codigo = malloc(sizeof(char) * (strlen($2.codigo) + 2*strlen(tipo) + 2*strlen($$.tmp) + strlen($2.tmp) + 25));
+                        sprintf($$.codigo, "%s\n%s %s;\n%s = recoger_%s(%s, -1);", $2.codigo, tipo, $$.tmp, $$.tmp, tipo, $2.tmp);
+                        free(tipo);
+                        free($2.codigo);
+                        free($2.tmp);
+                        }
                         break;
 
                     default :
+                        if (!err) {
+                        $$.tmp = tmpnuevo();
+                        char* tipo = getTipoNombre($$.tipo);
+                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.tmp) + 9));
+                        sprintf($$.codigo, OPUN_ESQ, $2.codigo, tipo, $$.tmp, $$.tmp, $1.codigo, $2.tmp);
+                }
                         break;
                 }                
 
-                if (!err) {
-                $$.tmp = tmpnuevo();
-                char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($2.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.tmp) + 9));
-                sprintf($$.codigo, OPUN_ESQ, $2.codigo, tipo, $$.tmp, $$.tmp, $1.codigo, $2.tmp);
-                }
             }
           | expresion OP_BINARIO_MULT expresion {
-                if ($1.tipo != $3.tipo) {
+                if ($1.tipo != $3.tipo && $1.esLista == 0) {
                     printf("(Línea %d) Error semántico: intento de operar en dos números de tipos distintos\n", yylineno);
                     err = 1;
                 }
 
                 switch ($2.atrib) {
                     case OPBIN_MULT_MOD :
-                        if ($1.tipo != entero || $3.tipo != entero) {
-                            printf("(Línea %d) Error semántico: sólo se puede calcular el módulo de dos enteros\n", yylineno);
+                        if ($3.tipo != entero) {
+                            printf("(Línea %d) Error semántico: sólo se puede calcular el módulo por un entero\n", yylineno);
+                            err = 1;
+                        }
+                        if ($1.tipo != entero && $1.esLista == 0) {
+                            printf("(Línea %d) Error semántico: sólo se puede calcular el módulo de un entero o una lista\n", yylineno);
                             err = 1;
                         }
 
-                        $$.tipo = entero;
+                        $$.tipo = $1.tipo;
+                        $$.esLista = $1.esLista;
+
+                        if (!err) {
+                        if ($$.esLista) {
+                            $$.tmp = tmpnuevo();
+                            $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 2*strlen($$.tmp) + strlen($1.tmp) + strlen($3.tmp) + 40));
+                            sprintf($$.codigo, "%s\n%s\nlgestor* %s = copiar_lista(%s);\nborrar_despues(%s, %s);", $1.codigo, $3.codigo, $$.tmp, $1.tmp, $$.tmp, $3.tmp);
+                            free($1.codigo);
+                            free($3.codigo);
+                            free($1.tmp);
+                            free($3.tmp);
+                        } else {
+                            $$.tmp = tmpnuevo();
+                            $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 2*strlen($$.tmp) + strlen($1.tmp) + strlen($3.tmp) + 15));
+                            sprintf($$.codigo, "%s\n%s\nint %s;\n%s = %s %c %s;", $1.codigo, $3.codigo, $$.tmp, $$.tmp, $1.tmp, '%', $3.tmp);
+                            free($1.codigo);
+                            free($3.codigo);
+                            free($1.tmp);
+                            free($3.tmp);
+                        }
+                        }
                         break;
 
                     case OPBIN_MULT_POR :
@@ -670,14 +764,17 @@ expresion : PARIZQ expresion PARDER {
                         $$.tipo = entero;
                         if ($1.tipo == real || $3.tipo == real) $$.tipo = real;
                         $$.esLista = $1.esLista || $3.esLista;
-                }
-                $$.tipo = $1.tipo;
+                        break;
 
-                if (!err) {
-                $$.tmp = tmpnuevo();
-                char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 11));
-                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
+                    default:
+                        $$.tipo = $1.tipo;
+
+                        if (!err) {
+                        $$.tmp = tmpnuevo();
+                        char* tipo = getTipoNombre($$.tipo);
+                        $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 11));
+                        sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
+                        }
                 }
             }
           | expresion OP_BINARIO_IG expresion {
@@ -813,6 +910,52 @@ expresion : PARIZQ expresion PARDER {
                 sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
                 }
             }
+          | expresion OP_BINARIO_MENMEN expresion {
+                if ($1.esLista != 1) {
+                    printf("(Línea %d) Error semántico: intento de borrar elemento de algo que no sea lista\n", yylineno);
+                    err = 1;
+                }
+                if ($3.tipo != entero) {
+                    printf("(Línea %d) Error semántico: índice de una lista debe ser un número entero\n", yylineno);
+                    err = 1;
+                }
+                $$.tipo = $1.tipo;
+                $$.esLista = 1;
+
+                if (!err) {
+                $$.tmp = tmpnuevo();
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 2*strlen($$.tmp) + strlen($1.tmp) + strlen($3.tmp) + 40));
+                sprintf($$.codigo, "%s\n%s\nlgestor* %s = copiar_lista(%s);\nborrar_posicion(%s, %s);", $1.codigo, $3.codigo, $$.tmp, $1.tmp, $$.tmp, $3.tmp);
+                free($1.codigo);
+                free($3.codigo);
+                free($1.tmp);
+                free($3.tmp); 
+                }
+            }
+          | expresion OP_TERN_SEG expresion {
+                if ($1.esLista == 0) {
+                    printf("(Línea %d) Error semántico: intento de recoger elemento de expresión que no sea lista\n", yylineno);
+                    err = 1;
+                }
+                if ($3.tipo != entero) {
+                    printf("(Línea %d) Error semántico: índice de lista debe ser un número entero\n", yylineno);
+                    err = 1;
+                }
+                $$.tipo = $1.tipo;
+                $$.esLista = 0;
+
+                if (!err) {
+                char* tipo = getTipoNombre($$.tipo);
+                $$.tmp = tmpnuevo();
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + 2*strlen(tipo) + 2*strlen($$.tmp) + strlen($1.tmp) + strlen($3.tmp) + 20));
+                sprintf($$.codigo, "%s\n%s\n%s %s;\n%s = recoger_%s(%s, %s);", $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, tipo, $1.tmp, $3.tmp);
+                free($1.codigo);
+                free($3.codigo);
+                free($1.tmp);
+                free($3.tmp);
+                free(tipo);
+                }
+            }
           | expresion OP_TERN_PRIM_UN expresion OP_TERN_SEG expresion {
                 if ($1.esLista == 0) {
                     printf("(Línea %d) Error semántico: intento de realizar operación de listas con algo que no sea lista\n", yylineno);
@@ -828,6 +971,19 @@ expresion : PARIZQ expresion PARDER {
                 }
                 $$.tipo = $1.tipo;
                 $$.esLista = 1;
+
+                if (!err) {
+                char* tipo = getTipoNombre($$.tipo);
+                $$.tmp = tmpnuevo();
+                char* dato = tmpnuevo();
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen($5.codigo) + 2*strlen($$.tmp) + 2*strlen($1.tmp) + strlen($3.tmp) + strlen($5.tmp) + 2*strlen(dato) + strlen(tipo) + 50));
+                sprintf($$.codigo, OPTERN_ESQ, $1.codigo, $3.codigo, $5.codigo, $$.tmp, $1.tmp, dato, tipo, $3.tmp, $$.tmp, dato, $5.tmp);
+                free($1.codigo);
+                free($3.codigo);
+                free($5.codigo);
+                free(tipo);
+                free(dato);
+                }
             }
           | IDENTIFICADOR {
                 int indice = TS_RecogerEntrada($1.lexema);

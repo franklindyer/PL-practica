@@ -1,0 +1,37 @@
+principal {
+    def variables
+        lista de entero lista1;
+        lista de real lista2, lista3;
+        lista de caracter lista4;
+    enddef variables
+
+    cout <<< lista1, ?lista1;
+
+    lista1 = lista1 ++ 3 @ 0;
+    lista1 = lista1 ++ 4 @ 0;
+    lista1 = lista1 ++ 4 @ 0;
+    lista1 = lista1 ++ 4 @ 0;
+    lista1 = lista1 ++ 4 @ 0;
+    lista2 = lista3 ++ 2.0 @ 0;
+    lista2 = lista2 ++ 3.0 @ 1;
+
+    cout <<< lista1, lista2, lista3, lista4;
+    cout <<< #lista1;
+    cout <<< ?lista1;
+    lista1 >>;
+    lista1 >>;
+    lista1 >>;
+    lista1 >>;
+    cout <<< ?lista1;
+
+    cout <<< "pruebas adicionales";
+    cout <<< lista1;
+    lista1 = lista1 % 2;
+    cout <<< lista1;
+    cout <<< lista1 @ 0;
+    cout <<< lista1 @ 1;
+    cout <<< lista1 @ 2;
+    cout <<< lista1 @ 3;
+    cout <<< lista1 @ 4;
+    cout <<< lista1 @ 5;
+}
