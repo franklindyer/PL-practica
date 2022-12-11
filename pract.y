@@ -722,8 +722,22 @@ expresion : PARIZQ expresion PARDER {
                         $$.tipo = $1.tipo;
 
                         if (!err) {
-                        if ($$.esLista) {
-                            
+                        if ($$.esLista) { 
+                            char* listanomb = $1.tmp;
+                            char* scalnomb = $3.tmp;
+                            if ($3.esLista) {
+                                listanomb = $3.tmp;
+                                scalnomb = $1.tmp;
+                            }
+                            $$.tmp = tmpnuevo();
+                            char* tipo = getTipoNombre($$.tipo);
+                            $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen(listanomb) + strlen(scalnomb) + 25));
+                            sprintf($$.codigo, "%s\n%s\nlgestor* %s;\n%s = mapear_div_%s(%s, %s);", $1.codigo, $3.codigo, $$.tmp, $$.tmp, tipo, listanomb, scalnomb);
+                            free($1.codigo);
+                            free($3.codigo);
+                            free($1.tmp);
+                            free($3.tmp);
+                            free(tipo);
                         } else {
                             char* tipo = getTipoNombre($$.tipo);
                             $$.tmp = tmpnuevo();
@@ -972,10 +986,32 @@ expresion : PARIZQ expresion PARDER {
                 $$.esLista = $1.esLista;
 
                 if (!err) {
-                $$.tmp = tmpnuevo();
-                char* tipo = getTipoNombre($$.tipo);
-                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 12));
-                sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
+                if ($$.esLista) {
+                    $$.tmp = tmpnuevo();
+                    char* tipo = getTipoNombre($$.tipo);
+                    char* listnomb = $1.tmp;
+                    char* scalnomb = $3.tmp;
+                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen($$.tmp) + strlen(tipo) + strlen(listnomb) + strlen(scalnomb) + 25));
+                    if ($3.esLista) {
+                        listnomb = $3.tmp;
+                        scalnomb = $1.tmp;
+                    }
+                    if ($2.atrib == OPUNBIN_MAS) {
+                        sprintf($$.codigo, "%s\n%s\nlgestor* %s = mapear_add_%s(%s, %s);", $1.codigo, $3.codigo, $$.tmp, tipo, listnomb, scalnomb);
+                    } else if ($2.atrib == OPUNBIN_MENOS) {
+                        sprintf($$.codigo, "%s\n%s\nlgestor* %s = mapear_sub_%s(%s, %s);", $1.codigo, $3.codigo, $$.tmp, tipo, listnomb, scalnomb);
+                    }
+                    free(tipo);
+                } else {
+                    $$.tmp = tmpnuevo();
+                    char* tipo = getTipoNombre($$.tipo);
+                    $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen($2.codigo) + strlen($1.tmp) + strlen($3.tmp) + 12));
+                    sprintf($$.codigo, OPBIN_ESQ, $1.codigo, $3.codigo, tipo, $$.tmp, $$.tmp, $1.tmp, $2.codigo, $3.tmp);
+                }
+                free($1.codigo);
+                free($3.codigo);
+                free($1.tmp);
+                free($3.tmp);
                 }
             }
           | expresion OP_BINARIO_MENMEN expresion {

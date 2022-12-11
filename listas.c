@@ -258,6 +258,46 @@ lgestor* mapear_mul_float(lgestor* gestor, float x) {
     return copia;
 }
 
+lgestor* mapear_sub_int(lgestor* gestor, int n) {
+    lgestor* copia = copiar_lista(gestor);
+    lnodo* nodo = copia->comienzo;
+    while (nodo != NULL) {
+        nodo->dato->n = nodo->dato->n - n;
+        nodo = nodo->sig;
+    } 
+    return copia;
+}
+
+lgestor* mapear_sub_float(lgestor* gestor, float x) {
+    lgestor* copia = copiar_lista(gestor);
+    lnodo* nodo = copia->comienzo;
+    while (nodo != NULL) {
+        nodo->dato->x = nodo->dato->x - x;
+        nodo = nodo->sig;
+    } 
+    return copia;
+}
+
+lgestor* mapear_div_int(lgestor* gestor, int n) {
+    lgestor* copia = copiar_lista(gestor);
+    lnodo* nodo = copia->comienzo;
+    while (nodo != NULL) {
+        nodo->dato->n = (nodo->dato->n)/n;
+        nodo = nodo->sig;
+    } 
+    return copia;
+}
+
+lgestor* mapear_div_float(lgestor* gestor, float x) {
+    lgestor* copia = copiar_lista(gestor);
+    lnodo* nodo = copia->comienzo;
+    while (nodo != NULL) {
+        nodo->dato->x = (nodo->dato->x)/x;
+        nodo = nodo->sig;
+    } 
+    return copia;
+}
+
 /*
 int main() {
     dlista* d1 = dato_entero(5);
