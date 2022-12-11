@@ -646,6 +646,7 @@ lista_expresiones_o_cadena : expresion COMA lista_expresiones_o_cadena {
 
 expresion : PARIZQ expresion PARDER {
                 $$.tipo = $2.tipo;
+                $$.esLista = $2.esLista;
 
                 if (!err) {
                 $$.codigo = $2.codigo;
@@ -780,13 +781,30 @@ expresion : PARIZQ expresion PARDER {
                             printf("(Línea %d) Error semántico: intento de multiplicar dos listas\n", yylineno);
                             err = 1;
                         }
-                        $$.tipo = entero;
-                        if ($1.tipo == real || $3.tipo == real) $$.tipo = real;
+                        if ($1.tipo != $3.tipo) {
+                            printf("(Línea %d) Error semántico: intento de multiplicar datos de tipos distintos\n", yylineno);
+                            err = 1;
+                        }
+                        $$.tipo = $1.tipo;
                         $$.esLista = $1.esLista || $3.esLista;
                         
                         if (!err) {
                         if ($$.esLista) {
-                            
+                            char* listanomb = $1.tmp;
+                            char* scalnomb = $3.tmp;
+                            if ($3.esLista) {
+                                listanomb = $3.tmp;
+                                scalnomb = $1.tmp;
+                            }
+                            $$.tmp = tmpnuevo();
+                            char* tipo = getTipoNombre($$.tipo);
+                            $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen(tipo) + 2*strlen($$.tmp) + strlen(listanomb) + strlen(scalnomb) + 25));
+                            sprintf($$.codigo, "%s\n%s\nlgestor* %s;\n%s = mapear_mul_%s(%s, %s);", $1.codigo, $3.codigo, $$.tmp, $$.tmp, tipo, listanomb, scalnomb);
+                            free($1.codigo);
+                            free($3.codigo);
+                            free($1.tmp);
+                            free($3.tmp);
+                            free(tipo);
                         } else {
                             char* tipo = getTipoNombre($$.tipo);
                             $$.tmp = tmpnuevo();
@@ -894,13 +912,27 @@ expresion : PARIZQ expresion PARDER {
                 }
             }
           | expresion OP_BINARIO_ASTAST expresion {
-                if ($1.tipo != lista || $3.tipo != lista) {
+                if ($1.esLista != 1 || $3.esLista != 1) {
                     printf("(Línea %d) Error semántico: intento de concatenar variables que no son listas\n", yylineno);
+                    err = 1;
+                }
+                if ($1.tipo != $3.tipo) {
+                    printf("(Línea %d) Error semántico: intento de concatenar listas de tipos distintos\n", yylineno);
                     err = 1;
                 }
 
                 $$.tipo = $3.tipo;
                 $$.esLista = 1;
+
+                if (!err) {
+                $$.tmp = tmpnuevo();
+                $$.codigo = malloc(sizeof(char) * (strlen($1.codigo) + strlen($3.codigo) + strlen($1.tmp) + strlen($3.tmp) + 2*strlen($$.tmp)));
+                sprintf($$.codigo, "%s\n%s\nlgestor* %s;\n%s = concatenar(%s, %s);", $1.codigo, $3.codigo, $$.tmp, $$.tmp, $1.tmp, $3.tmp);
+                free($1.codigo);
+                free($3.codigo);
+                free($1.tmp);
+                free($3.tmp);
+                }
             }
           | OP_UN_BIN expresion %prec OP_UNARIO {
                switch ($1.atrib) {
@@ -937,6 +969,7 @@ expresion : PARIZQ expresion PARDER {
                     err = 1;
                 }
                 $$.tipo = $1.tipo;
+                $$.esLista = $1.esLista;
 
                 if (!err) {
                 $$.tmp = tmpnuevo();
@@ -1043,6 +1076,7 @@ expresion : PARIZQ expresion PARDER {
             }
           | CONSTANTE {
                 $$.tipo = $1.tipo;
+                $$.esLista = 0;
 
                 if (!err) {
                 $$.codigo = malloc(2 * sizeof(char));

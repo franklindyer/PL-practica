@@ -204,6 +204,60 @@ void borrar_despues(lgestor* gestor, int n) {
     while (borrar_posicion(gestor, n) == 0);
 }
 
+lgestor* concatenar(lgestor* gestor1, lgestor* gestor2) {
+    lgestor* copia1 = copiar_lista(gestor1);
+    lgestor* copia2 = copiar_lista(gestor2);
+    lnodo* nodo1 = copia1->comienzo;
+
+    if (nodo1 == NULL) return copia2;
+    while (nodo1->sig != NULL) nodo1 = nodo1->sig;
+    nodo1->sig = copia2->comienzo;
+    copia2->comienzo->prev = nodo1;
+    copia1->largo = gestor1->largo + gestor2->largo;
+
+    return copia1;
+}
+
+lgestor* mapear_add_int(lgestor* gestor, int n) {
+    lgestor* copia = copiar_lista(gestor);
+    lnodo* nodo = copia->comienzo;
+    while (nodo != NULL) {
+        nodo->dato->n += n;
+        nodo = nodo->sig;
+    } 
+    return copia;
+}
+
+lgestor* mapear_add_float(lgestor* gestor, float x) {
+    lgestor* copia = copiar_lista(gestor);
+    lnodo* nodo = copia->comienzo;
+    while (nodo != NULL) {
+        nodo->dato->x += x;
+        nodo = nodo->sig;
+    } 
+    return copia;
+}
+
+lgestor* mapear_mul_int(lgestor* gestor, int n) {
+    lgestor* copia = copiar_lista(gestor);
+    lnodo* nodo = copia->comienzo;
+    while (nodo != NULL) {
+        nodo->dato->n = n * nodo->dato->n;
+        nodo = nodo->sig;
+    } 
+    return copia;
+}
+
+lgestor* mapear_mul_float(lgestor* gestor, float x) {
+    lgestor* copia = copiar_lista(gestor);
+    lnodo* nodo = copia->comienzo;
+    while (nodo != NULL) {
+        nodo->dato->x = x * nodo->dato->x;
+        nodo = nodo->sig;
+    } 
+    return copia;
+}
+
 /*
 int main() {
     dlista* d1 = dato_entero(5);

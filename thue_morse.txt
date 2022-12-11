@@ -1,0 +1,14 @@
+principal {
+    def variables
+        lista de entero thue;
+        entero i;
+    enddef variables
+
+    thue = thue ++ 1 @ 0;
+
+    para (i = 0; i < 5; i = i + 1;) {
+        thue = thue ** ((1 - 2) * thue);
+    }
+
+    cout <<< thue;
+}

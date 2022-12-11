@@ -552,8 +552,8 @@ static const yytype_uint16 yyrline[] =
      318,   341,   364,   370,   381,   391,   399,   402,   405,   408,
      411,   414,   417,   420,   423,   428,   445,   458,   458,   481,
      503,   519,   540,   560,   580,   585,   590,   608,   618,   635,
-     644,   647,   655,   713,   815,   830,   851,   866,   881,   896,
-     905,   926,   948,   970,   994,  1023,  1044,  1053,  1057,  1060
+     644,   647,   656,   714,   833,   848,   869,   884,   899,   914,
+     937,   958,   981,  1003,  1027,  1056,  1077,  1087,  1091,  1094
 };
 #endif
 
@@ -2307,6 +2307,7 @@ yyreduce:
 #line 647 "pract.y"
     {
                 (yyval).tipo = (yyvsp[(2) - (3)]).tipo;
+                (yyval).esLista = (yyvsp[(2) - (3)]).esLista;
 
                 if (!err) {
                 (yyval).codigo = (yyvsp[(2) - (3)]).codigo;
@@ -2316,7 +2317,7 @@ yyreduce:
     break;
 
   case 62:
-#line 655 "pract.y"
+#line 656 "pract.y"
     {
                 switch ((yyvsp[(2) - (2)]).atrib) {
                     case OPUN_NO :
@@ -2378,7 +2379,7 @@ yyreduce:
     break;
 
   case 63:
-#line 713 "pract.y"
+#line 714 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).tipo != (yyvsp[(3) - (3)]).tipo && (yyvsp[(1) - (3)]).esLista == 0) {
                     printf("(Línea %d) Error semántico: intento de operar en dos números de tipos distintos\n", yylineno);
@@ -2449,13 +2450,30 @@ yyreduce:
                             printf("(Línea %d) Error semántico: intento de multiplicar dos listas\n", yylineno);
                             err = 1;
                         }
-                        (yyval).tipo = entero;
-                        if ((yyvsp[(1) - (3)]).tipo == real || (yyvsp[(3) - (3)]).tipo == real) (yyval).tipo = real;
+                        if ((yyvsp[(1) - (3)]).tipo != (yyvsp[(3) - (3)]).tipo) {
+                            printf("(Línea %d) Error semántico: intento de multiplicar datos de tipos distintos\n", yylineno);
+                            err = 1;
+                        }
+                        (yyval).tipo = (yyvsp[(1) - (3)]).tipo;
                         (yyval).esLista = (yyvsp[(1) - (3)]).esLista || (yyvsp[(3) - (3)]).esLista;
                         
                         if (!err) {
                         if ((yyval).esLista) {
-                            
+                            char* listanomb = (yyvsp[(1) - (3)]).tmp;
+                            char* scalnomb = (yyvsp[(3) - (3)]).tmp;
+                            if ((yyvsp[(3) - (3)]).esLista) {
+                                listanomb = (yyvsp[(3) - (3)]).tmp;
+                                scalnomb = (yyvsp[(1) - (3)]).tmp;
+                            }
+                            (yyval).tmp = tmpnuevo();
+                            char* tipo = getTipoNombre((yyval).tipo);
+                            (yyval).codigo = malloc(sizeof(char) * (strlen((yyvsp[(1) - (3)]).codigo) + strlen((yyvsp[(3) - (3)]).codigo) + strlen(tipo) + 2*strlen((yyval).tmp) + strlen(listanomb) + strlen(scalnomb) + 25));
+                            sprintf((yyval).codigo, "%s\n%s\nlgestor* %s;\n%s = mapear_mul_%s(%s, %s);", (yyvsp[(1) - (3)]).codigo, (yyvsp[(3) - (3)]).codigo, (yyval).tmp, (yyval).tmp, tipo, listanomb, scalnomb);
+                            free((yyvsp[(1) - (3)]).codigo);
+                            free((yyvsp[(3) - (3)]).codigo);
+                            free((yyvsp[(1) - (3)]).tmp);
+                            free((yyvsp[(3) - (3)]).tmp);
+                            free(tipo);
                         } else {
                             char* tipo = getTipoNombre((yyval).tipo);
                             (yyval).tmp = tmpnuevo();
@@ -2484,7 +2502,7 @@ yyreduce:
     break;
 
   case 64:
-#line 815 "pract.y"
+#line 833 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).tipo != (yyvsp[(3) - (3)]).tipo || (yyvsp[(1) - (3)]).esLista != (yyvsp[(3) - (3)]).esLista) {
                     printf("(Línea %d) Error semántico: intento de comparar variables de tipos distintos\n", yylineno);
@@ -2503,7 +2521,7 @@ yyreduce:
     break;
 
   case 65:
-#line 830 "pract.y"
+#line 848 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).tipo != entero && (yyvsp[(1) - (3)]).tipo != real) {
                     printf("(Línea %d) Error semántico: intento de comparar variables no numéricos\n", yylineno);
@@ -2528,7 +2546,7 @@ yyreduce:
     break;
 
   case 66:
-#line 851 "pract.y"
+#line 869 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).tipo != booleano || (yyvsp[(3) - (3)]).tipo != booleano) {
                     printf("(Línea %d) Error semántico: intento de realizar AND con variables no booleanos\n", yylineno);
@@ -2547,7 +2565,7 @@ yyreduce:
     break;
 
   case 67:
-#line 866 "pract.y"
+#line 884 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).tipo != booleano || (yyvsp[(3) - (3)]).tipo != booleano) {
                     printf("(Línea %d) Error semántico: intento de realizar OR con variables no booleanos\n", yylineno);
@@ -2566,7 +2584,7 @@ yyreduce:
     break;
 
   case 68:
-#line 881 "pract.y"
+#line 899 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).tipo != booleano || (yyvsp[(3) - (3)]).tipo != booleano) {
                     printf("(Línea %d) Error semántico: intento de realizar XOR con variables no booleanos\n", yylineno);
@@ -2585,20 +2603,34 @@ yyreduce:
     break;
 
   case 69:
-#line 896 "pract.y"
+#line 914 "pract.y"
     {
-                if ((yyvsp[(1) - (3)]).tipo != lista || (yyvsp[(3) - (3)]).tipo != lista) {
+                if ((yyvsp[(1) - (3)]).esLista != 1 || (yyvsp[(3) - (3)]).esLista != 1) {
                     printf("(Línea %d) Error semántico: intento de concatenar variables que no son listas\n", yylineno);
+                    err = 1;
+                }
+                if ((yyvsp[(1) - (3)]).tipo != (yyvsp[(3) - (3)]).tipo) {
+                    printf("(Línea %d) Error semántico: intento de concatenar listas de tipos distintos\n", yylineno);
                     err = 1;
                 }
 
                 (yyval).tipo = (yyvsp[(3) - (3)]).tipo;
                 (yyval).esLista = 1;
+
+                if (!err) {
+                (yyval).tmp = tmpnuevo();
+                (yyval).codigo = malloc(sizeof(char) * (strlen((yyvsp[(1) - (3)]).codigo) + strlen((yyvsp[(3) - (3)]).codigo) + strlen((yyvsp[(1) - (3)]).tmp) + strlen((yyvsp[(3) - (3)]).tmp) + 2*strlen((yyval).tmp)));
+                sprintf((yyval).codigo, "%s\n%s\nlgestor* %s;\n%s = concatenar(%s, %s);", (yyvsp[(1) - (3)]).codigo, (yyvsp[(3) - (3)]).codigo, (yyval).tmp, (yyval).tmp, (yyvsp[(1) - (3)]).tmp, (yyvsp[(3) - (3)]).tmp);
+                free((yyvsp[(1) - (3)]).codigo);
+                free((yyvsp[(3) - (3)]).codigo);
+                free((yyvsp[(1) - (3)]).tmp);
+                free((yyvsp[(3) - (3)]).tmp);
+                }
             }
     break;
 
   case 70:
-#line 905 "pract.y"
+#line 937 "pract.y"
     {
                switch ((yyvsp[(1) - (2)]).atrib) {
                     case OPUNBIN_MAS :
@@ -2623,7 +2655,7 @@ yyreduce:
     break;
 
   case 71:
-#line 926 "pract.y"
+#line 958 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).tipo != (yyvsp[(3) - (3)]).tipo) {
                     printf("(Línea %d) Error semántico: intento de operar en dos valores de tipos distintos\n", yylineno);
@@ -2638,6 +2670,7 @@ yyreduce:
                     err = 1;
                 }
                 (yyval).tipo = (yyvsp[(1) - (3)]).tipo;
+                (yyval).esLista = (yyvsp[(1) - (3)]).esLista;
 
                 if (!err) {
                 (yyval).tmp = tmpnuevo();
@@ -2649,7 +2682,7 @@ yyreduce:
     break;
 
   case 72:
-#line 948 "pract.y"
+#line 981 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).esLista != 1) {
                     printf("(Línea %d) Error semántico: intento de borrar elemento de algo que no sea lista\n", yylineno);
@@ -2675,7 +2708,7 @@ yyreduce:
     break;
 
   case 73:
-#line 970 "pract.y"
+#line 1003 "pract.y"
     {
                 if ((yyvsp[(1) - (3)]).esLista == 0) {
                     printf("(Línea %d) Error semántico: intento de recoger elemento de expresión que no sea lista\n", yylineno);
@@ -2703,7 +2736,7 @@ yyreduce:
     break;
 
   case 74:
-#line 994 "pract.y"
+#line 1027 "pract.y"
     {
                 if ((yyvsp[(1) - (5)]).esLista == 0) {
                     printf("(Línea %d) Error semántico: intento de realizar operación de listas con algo que no sea lista\n", yylineno);
@@ -2736,7 +2769,7 @@ yyreduce:
     break;
 
   case 75:
-#line 1023 "pract.y"
+#line 1056 "pract.y"
     {
                 int indice = TS_RecogerEntrada((yyvsp[(1) - (1)]).lexema);
                 if (indice == -1) {
@@ -2761,9 +2794,10 @@ yyreduce:
     break;
 
   case 76:
-#line 1044 "pract.y"
+#line 1077 "pract.y"
     {
                 (yyval).tipo = (yyvsp[(1) - (1)]).tipo;
+                (yyval).esLista = 0;
 
                 if (!err) {
                 (yyval).codigo = malloc(2 * sizeof(char));
@@ -2774,7 +2808,7 @@ yyreduce:
     break;
 
   case 77:
-#line 1053 "pract.y"
+#line 1087 "pract.y"
     {
                 (yyval).tipo = (yyvsp[(1) - (1)]).tipo;
                 (yyval).esLista = 1;
@@ -2782,7 +2816,7 @@ yyreduce:
     break;
 
   case 79:
-#line 1060 "pract.y"
+#line 1094 "pract.y"
     {
                         (yyval).tipo = (yyvsp[(2) - (3)]).tipo;
                         (yyval).esLista = 1;
@@ -2791,7 +2825,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2795 "y.tab.c"
+#line 2829 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

@@ -2,73 +2,50 @@
 #include "listas.c"
 int main() {
 {
-float x0;
-float x1;
-int x2;
+lgestor *x0 = lista_vacia(LISTA_int);
+int x1;
 
 
-void proc0(float *p0, int *p1, float *p2)
-{
-float x3;
-int x4;
-float x5;
 
 
-x3 = 1.000000;
+lgestor* t0 = copiar_lista(x0);
+dlista* t1 = dato_int(1);
+insertar_dato(t0, t1, 0);
 
-*p2 = 1.000000;
+x0 = t0;
 
-x5 = 1.000000;
-
-x4 = 0;
+x1 = 0;
 etiq0: ;
 
 
-int t0;
-t0 = x4 < *p1;
-if(!t0) goto etiq1;
+int t2;
+t2 = x1 < 5;
+if(!t2) goto etiq1;
 {
 
 
 
 
 
-float t2 = *p0 / x5;
-float t3 = x3 * t2;
-x3 = t3;
+int t4;
+t4 = 1 - 2;
 
-
-float t4;
-t4 = *p2 + x3;
-*p2 = t4;
-
-
-float t5;
-t5 = x5 + 1.000000;
-x5 = t5;
+lgestor* t5;
+t5 = mapear_mul_int(x0, t4);
+lgestor* t6;
+t6 = concatenar(x0, t5);
+x0 = t6;
 }
 
 
-int t1;
-t1 = x4 + 1;
-x4 = t1;
+int t3;
+t3 = x1 + 1;
+x1 = t3;
 goto etiq0;
 etiq1: ;
-}
 
-x0 = 0.000000;
-
-x2 = 10;
-
-x1 = 1.000000;
-proc0(&x1, &x2, &x0);
-
-printf("%f\n", x0);
-
-x1 = 2.000000;
-proc0(&x1, &x2, &x0);
-
-printf("%f\n", x0);
+imprimir_lista(x0);
+printf("\n");
 }
 return 0;
 }

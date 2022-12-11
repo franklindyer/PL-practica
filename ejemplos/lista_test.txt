@@ -25,6 +25,10 @@ principal {
     cout <<< ?lista1;
 
     cout <<< "pruebas adicionales";
+    lista1 = lista1 ** lista1;
+    lista1 = lista1 ** lista1;
+    lista1 = lista1 ** lista1;
+
     cout <<< lista1;
     lista1 = lista1 % 2;
     cout <<< lista1;
@@ -34,4 +38,5 @@ principal {
     cout <<< lista1 @ 3;
     cout <<< lista1 @ 4;
     cout <<< lista1 @ 5;
+
 }
